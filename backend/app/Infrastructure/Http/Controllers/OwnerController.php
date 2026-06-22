@@ -11,15 +11,21 @@ use App\Application\Owner\GetOwner\GetOwnersHandler;
 use App\Infrastructure\Http\Requests\CreateOwnerRequest;
 use App\Infrastructure\Http\Resources\OwnerResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
 
 class OwnerController
 {
-    public function index(GetOwnersHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetOwnersHandler $handler): JsonResponse
     {
-        $owners = array_map(fn ($dto) => (array) $dto, $handler->handle());
+        $result = $handler->handle(
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
+        );
 
-        return OwnerResource::collection($owners);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetOwnerByIdHandler $handler): OwnerResource

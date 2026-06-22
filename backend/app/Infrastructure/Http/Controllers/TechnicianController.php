@@ -11,15 +11,21 @@ use App\Application\Technician\GetTechnicians\GetTechniciansHandler;
 use App\Infrastructure\Http\Requests\CreateTechnicianRequest;
 use App\Infrastructure\Http\Resources\TechnicianResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
 
 class TechnicianController
 {
-    public function index(GetTechniciansHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetTechniciansHandler $handler): JsonResponse
     {
-        $technicians = array_map(fn ($dto) => (array) $dto, $handler->handle());
+        $result = $handler->handle(
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
+        );
 
-        return TechnicianResource::collection($technicians);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetTechnicianByIdHandler $handler): TechnicianResource

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Technician\GetTechnicians;
 
+use App\Application\Shared\PaginatedResult;
 use App\Domain\Technician\ITechnicianRepository;
 
 final class GetTechniciansHandler
@@ -12,10 +13,9 @@ final class GetTechniciansHandler
         private readonly ITechnicianRepository $technicians,
     ) {}
 
-    /** @return TechnicianDTO[] */
-    public function handle(): array
+    public function handle(int $page = 1, int $perPage = 15): PaginatedResult
     {
-        return array_map(
+        $items = array_map(
             fn ($t) => new TechnicianDTO(
                 id: $t->id()->value,
                 name: $t->name()->value,
@@ -24,7 +24,14 @@ final class GetTechniciansHandler
                 specialty: $t->specialty()->value,
                 is_available: $t->isAvailable(),
             ),
-            $this->technicians->findAll(),
+            $this->technicians->findPaginated($page, $perPage),
+        );
+
+        return new PaginatedResult(
+            items: $items,
+            total: $this->technicians->countAll(),
+            page: $page,
+            perPage: $perPage,
         );
     }
 }

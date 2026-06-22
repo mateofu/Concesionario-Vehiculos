@@ -43,6 +43,20 @@ final class EloquentWorkStationRepository implements IWorkStationRepository
             ->all();
     }
 
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return WorkStationModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => WorkStationMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return WorkStationModel::count();
+    }
+
     public function assignTechnician(WorkStationId $workStationId, TechnicianId $technicianId): void
     {
         $model = WorkStationModel::findOrFail($workStationId->value);

@@ -40,4 +40,18 @@ final class EloquentTechnicianRepository implements ITechnicianRepository
             ->map(fn ($m) => TechnicianMapper::toDomain($m))
             ->all();
     }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return TechnicianModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => TechnicianMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return TechnicianModel::count();
+    }
 }

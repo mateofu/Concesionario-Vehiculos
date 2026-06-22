@@ -26,6 +26,22 @@ interface IAppointmentRepository
         ?\DateTimeImmutable $date = null,
     ): array;
 
+    public function findPaginated(
+        int $page,
+        int $perPage,
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): array;
+
+    public function countAll(
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): int;
+
     public function hasOverlap(
         WorkStationId $workStationId,
         \DateTimeImmutable $start,

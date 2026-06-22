@@ -51,4 +51,18 @@ final class EloquentOwnerRepository implements IOwnerRepository
             ->map(fn ($m) => OwnerMapper::toDomain($m))
             ->all();
     }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return OwnerModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => OwnerMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return OwnerModel::count();
+    }
 }

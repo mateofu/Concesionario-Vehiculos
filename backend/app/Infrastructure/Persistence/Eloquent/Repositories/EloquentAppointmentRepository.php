@@ -66,6 +66,61 @@ final class EloquentAppointmentRepository implements IAppointmentRepository
             ->all();
     }
 
+    public function findPaginated(
+        int $page,
+        int $perPage,
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): array {
+        $query = AppointmentModel::query();
+
+        if ($status !== null) {
+            $query->where('status', $status->value);
+        }
+        if ($technicianId !== null) {
+            $query->where('technician_id', $technicianId->value);
+        }
+        if ($vehicleId !== null) {
+            $query->where('vehicle_id', $vehicleId->value);
+        }
+        if ($date !== null) {
+            $query->whereDate('scheduled_at', $date->format('Y-m-d'));
+        }
+
+        return $query->orderBy('scheduled_at')
+            ->skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => AppointmentMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): int {
+        $query = AppointmentModel::query();
+
+        if ($status !== null) {
+            $query->where('status', $status->value);
+        }
+        if ($technicianId !== null) {
+            $query->where('technician_id', $technicianId->value);
+        }
+        if ($vehicleId !== null) {
+            $query->where('vehicle_id', $vehicleId->value);
+        }
+        if ($date !== null) {
+            $query->whereDate('scheduled_at', $date->format('Y-m-d'));
+        }
+
+        return $query->count();
+    }
+
     public function hasOverlap(
         WorkStationId $workStationId,
         \DateTimeImmutable $start,

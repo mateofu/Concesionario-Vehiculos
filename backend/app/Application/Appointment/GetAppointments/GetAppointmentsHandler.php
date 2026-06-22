@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Appointment\GetAppointments;
 
+use App\Application\Shared\PaginatedResult;
 use App\Domain\Appointment\IAppointmentRepository;
 use App\Domain\Appointment\ValueObjects\AppointmentStatus;
 use App\Domain\Technician\ValueObjects\TechnicianId;
@@ -15,21 +16,20 @@ final class GetAppointmentsHandler
         private readonly IAppointmentRepository $appointments,
     ) {}
 
-    /** @return AppointmentDTO[] */
     public function handle(
         ?string $status = null,
         ?string $technicianId = null,
         ?string $vehicleId = null,
         ?string $date = null,
-    ): array {
-        $appointments = $this->appointments->findAll(
-            status: $status !== null ? AppointmentStatus::from($status) : null,
-            technicianId: $technicianId !== null ? new TechnicianId((int) $technicianId) : null,
-            vehicleId: $vehicleId !== null ? new VehicleId((int) $vehicleId) : null,
-            date: $date !== null ? new \DateTimeImmutable($date) : null,
-        );
+        int $page = 1,
+        int $perPage = 15,
+    ): PaginatedResult {
+        $statusVO      = $status !== null ? AppointmentStatus::from($status) : null;
+        $technicianVO  = $technicianId !== null ? new TechnicianId((int) $technicianId) : null;
+        $vehicleVO     = $vehicleId !== null ? new VehicleId((int) $vehicleId) : null;
+        $dateVO        = $date !== null ? new \DateTimeImmutable($date) : null;
 
-        return array_map(
+        $items = array_map(
             fn ($a) => new AppointmentDTO(
                 id: $a->id()->value,
                 vehicle_id: $a->vehicleId()->value,
@@ -40,7 +40,14 @@ final class GetAppointmentsHandler
                 status: $a->status()->value,
                 notes: $a->notes(),
             ),
-            $appointments,
+            $this->appointments->findPaginated($page, $perPage, $statusVO, $technicianVO, $vehicleVO, $dateVO),
+        );
+
+        return new PaginatedResult(
+            items: $items,
+            total: $this->appointments->countAll($statusVO, $technicianVO, $vehicleVO, $dateVO),
+            page: $page,
+            perPage: $perPage,
         );
     }
 }

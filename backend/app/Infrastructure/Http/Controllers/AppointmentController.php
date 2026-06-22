@@ -16,23 +16,24 @@ use App\Infrastructure\Http\Requests\UpdateAppointmentStatusRequest;
 use App\Infrastructure\Http\Resources\AppointmentResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AppointmentController
 {
-    public function index(Request $request, GetAppointmentsHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetAppointmentsHandler $handler): JsonResponse
     {
-        $appointments = array_map(
-            fn ($dto) => (array) $dto,
-            $handler->handle(
-                status:      $request->query('status'),
-                technicianId: $request->query('technician_id'),
-                vehicleId:   $request->query('vehicle_id'),
-                date:        $request->query('date'),
-            ),
+        $result = $handler->handle(
+            status:       $request->query('status'),
+            technicianId: $request->query('technician_id'),
+            vehicleId:    $request->query('vehicle_id'),
+            date:         $request->query('date'),
+            page:         (int) $request->query('page', 1),
+            perPage:      (int) $request->query('per_page', 15),
         );
 
-        return AppointmentResource::collection($appointments);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetAppointmentByIdHandler $handler): AppointmentResource

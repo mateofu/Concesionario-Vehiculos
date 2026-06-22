@@ -12,18 +12,21 @@ use App\Infrastructure\Http\Requests\CreateVehicleRequest;
 use App\Infrastructure\Http\Resources\VehicleResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class VehicleController
 {
-    public function index(Request $request, GetVehiclesHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetVehiclesHandler $handler): JsonResponse
     {
-        $vehicles = array_map(
-            fn ($dto) => (array) $dto,
-            $handler->handle($request->query('owner_id')),
+        $result = $handler->handle(
+            ownerId: $request->query('owner_id'),
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
         );
 
-        return VehicleResource::collection($vehicles);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetVehicleByIdHandler $handler): VehicleResource

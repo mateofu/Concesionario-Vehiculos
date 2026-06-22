@@ -21,4 +21,8 @@ interface IVehicleRepository
 
     /** @return Vehicle[] */
     public function findAll(): array;
+
+    public function findPaginated(int $page, int $perPage): array;
+
+    public function countAll(): int;
 }

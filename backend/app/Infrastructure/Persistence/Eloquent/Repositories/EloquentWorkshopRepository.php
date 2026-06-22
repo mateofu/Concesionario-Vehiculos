@@ -32,4 +32,18 @@ final class EloquentWorkshopRepository implements IWorkshopRepository
             ->map(fn ($m) => WorkshopMapper::toDomain($m))
             ->all();
     }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return WorkshopModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => WorkshopMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return WorkshopModel::count();
+    }
 }

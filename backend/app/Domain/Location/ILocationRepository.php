@@ -18,4 +18,8 @@ interface ILocationRepository
 
     /** @return Location[] */
     public function findByWorkshop(WorkshopId $workshopId): array;
+
+    public function findPaginated(int $page, int $perPage, ?WorkshopId $workshopId = null): array;
+
+    public function countAll(?WorkshopId $workshopId = null): int;
 }

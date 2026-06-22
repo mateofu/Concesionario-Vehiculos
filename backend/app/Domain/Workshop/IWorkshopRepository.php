@@ -14,4 +14,8 @@ interface IWorkshopRepository
 
     /** @return Workshop[] */
     public function findAll(): array;
+
+    public function findPaginated(int $page, int $perPage): array;
+
+    public function countAll(): int;
 }

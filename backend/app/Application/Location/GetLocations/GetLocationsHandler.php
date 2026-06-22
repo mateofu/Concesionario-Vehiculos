@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Location\GetLocations;
 
+use App\Application\Shared\PaginatedResult;
 use App\Domain\Location\ILocationRepository;
 use App\Domain\Workshop\ValueObjects\WorkshopId;
 
@@ -13,21 +14,25 @@ final class GetLocationsHandler
         private readonly ILocationRepository $locations,
     ) {}
 
-    /** @return LocationDTO[] */
-    public function handle(?string $workshopId = null): array
+    public function handle(?string $workshopId = null, int $page = 1, int $perPage = 15): PaginatedResult
     {
-        $locations = $workshopId !== null
-            ? $this->locations->findByWorkshop(new WorkshopId((int) $workshopId))
-            : $this->locations->findAll();
+        $wsId = $workshopId !== null ? new WorkshopId((int) $workshopId) : null;
 
-        return array_map(
+        $items = array_map(
             fn ($location) => new LocationDTO(
                 id: $location->id()->value,
                 workshop_id: $location->workshopId()->value,
                 name: $location->name()->value,
                 address: $location->address(),
             ),
-            $locations,
+            $this->locations->findPaginated($page, $perPage, $wsId),
+        );
+
+        return new PaginatedResult(
+            items: $items,
+            total: $this->locations->countAll($wsId),
+            page: $page,
+            perPage: $perPage,
         );
     }
 }
