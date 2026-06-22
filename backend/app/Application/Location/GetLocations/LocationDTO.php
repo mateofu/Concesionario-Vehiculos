@@ -8,7 +8,7 @@ final readonly class LocationDTO
 {
     public function __construct(
         public string $id,
-        public string $workshopId,
+        public string $workshop_id,
         public string $name,
         public string $address,
     ) {}

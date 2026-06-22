@@ -31,13 +31,13 @@ final class GetAppointmentsHandler
 
         return array_map(
             fn ($appointment) => new AppointmentDTO(
-                $appointment->id()->value,
-                $appointment->vehicleId()->value,
-                $appointment->technicianId()->value,
-                $appointment->workStationId()->value,
-                $appointment->scheduledAt()->format(\DateTimeInterface::ATOM),
-                $appointment->status()->value,
-                $appointment->notes(),
+                id: $appointment->id()->value,
+                vehicle_id: $appointment->vehicleId()->value,
+                technician_id: $appointment->technicianId()->value,
+                work_station_id: $appointment->workStationId()->value,
+                scheduled_at: $appointment->scheduledAt()->format(\DateTimeInterface::ATOM),
+                status: $appointment->status()->value,
+                notes: $appointment->notes(),
             ),
             $appointments,
         );
