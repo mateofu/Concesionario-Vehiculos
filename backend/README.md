@@ -4,6 +4,19 @@ API REST para el sistema de agendamiento de citas de un concesionario de vehícu
 
 ---
 
+## Características destacadas
+
+- **Arquitectura Hexagonal real**: el dominio está aislado del framework. Laravel y Eloquent solo viven en la capa de Infraestructura.
+- **Lógica de negocio no trivial**: validación de horarios operativos, periodos bloqueados y **detección de solapamiento de citas** sobre un mismo puesto de trabajo.
+- **Modelo de dominio rico**: entidades, *Value Objects* (placa, centro de costo, estados de cita...) y eventos de dominio, en lugar de modelos anémicos.
+- **Separación CQRS-ligera**: *Commands* + *Handlers* para escritura y *Queries* + *DTOs* para lectura.
+- **Autenticación** con Laravel Sanctum (tokens Bearer) protegiendo todos los endpoints.
+- **Paginación** uniforme en todos los listados.
+- **Suite de pruebas** unitarias (dominio y casos de uso) y de integración (endpoints HTTP).
+- **Entorno reproducible** con Docker (PHP-FPM + PostgreSQL + Nginx).
+
+---
+
 ## Stack tecnológico
 
 | Tecnología | Versión | Rol |
@@ -57,6 +70,26 @@ app/
 - Las interfaces de repositorio viven en el **Dominio**; las implementaciones Eloquent en **Infraestructura**
 - Los handlers de la capa **Aplicación** nunca acceden directamente a la base de datos
 - El dominio no tiene dependencias de Laravel ni de Eloquent
+
+---
+
+## Decisiones de diseño
+
+Estas son las decisiones técnicas más relevantes y el razonamiento detrás de cada una:
+
+- **Arquitectura Hexagonal en lugar del patrón MVC clásico de Laravel.** El objetivo es que la lógica de negocio sea independiente del framework: si mañana se cambia Eloquent por otro ORM, o Laravel por otro framework, el `Domain/` no se toca. El framework es un detalle de infraestructura, no el centro del sistema.
+
+- **Modelo de dominio rico con *Value Objects*.** Conceptos como la placa de un vehículo, el centro de costo o el estado de una cita se modelan como objetos que validan sus propias invariantes al construirse. Esto evita estados inválidos y concentra las reglas en un solo lugar, en vez de dispersarlas en validaciones de controlador.
+
+- **Mappers entre dominio y persistencia.** Las entidades de dominio no extienden de Eloquent. Un *Mapper* traduce entre la entidad pura y el modelo Eloquent, manteniendo el dominio limpio a costa de un poco más de código (un trade-off consciente a favor del desacoplamiento).
+
+- **Commands/Handlers para escritura y Queries/DTOs para lectura.** Las operaciones de escritura expresan intención (`CreateAppointmentCommand`) y las de lectura devuelven DTOs planos en vez de entidades, optimizando cada camino por separado.
+
+- **IDs autoincrementales en lugar de UUID.** Se priorizó la legibilidad y el control (IDs cortos `1, 2, 3...`) sobre la dispersión de UUID, dado que es un sistema interno de un concesionario y no requiere ofuscar identificadores ni generarlos en cliente.
+
+- **Validación de solapamiento en el dominio, no en la base de datos.** La regla de "no dos citas activas en el mismo puesto a la misma hora" se resuelve consultando el repositorio y comparando rangos de tiempo, lo que permite devolver un error de negocio claro (`409 Conflict`) en vez de depender de una restricción de BD opaca.
+
+- **Respuestas y códigos HTTP semánticos.** `409` para conflictos de solapamiento, `422` para validación/reglas de negocio, `404` para recursos inexistentes y `401` para autenticación, de forma que el frontend pueda reaccionar a cada caso sin parsear mensajes.
 
 ---
 
@@ -246,6 +279,25 @@ Todos los endpoints excepto `/auth/login` requieren el header `Authorization: Be
 | GET | `/appointments/{id}` | Ver cita por ID |
 | PATCH | `/appointments/{id}/status` | Actualizar estado |
 | DELETE | `/appointments/{id}` | Cancelar cita |
+
+Ejemplo de creación de cita:
+
+```http
+POST /api/v1/appointments
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "vehicle_id": 1,
+  "technician_id": 1,
+  "work_station_id": 1,
+  "scheduled_at": "2026-07-01 09:00:00",
+  "duration_minutes": 60,
+  "notes": "Cambio de aceite y revisión general"
+}
+```
+
+Si el puesto ya tiene una cita en ese rango horario, la API responde `409 Conflict`. Si la hora cae fuera del horario operativo de la sede o dentro de un periodo bloqueado, responde `422`.
 
 ### Paginación
 
