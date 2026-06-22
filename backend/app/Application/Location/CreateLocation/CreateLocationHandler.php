@@ -10,7 +10,6 @@ use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\Location\ValueObjects\LocationName;
 use App\Domain\Workshop\IWorkshopRepository;
 use App\Domain\Workshop\ValueObjects\WorkshopId;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class CreateLocationHandler
@@ -20,25 +19,21 @@ final class CreateLocationHandler
         private readonly IWorkshopRepository $workshops,
     ) {}
 
-    public function handle(CreateLocationCommand $command): string
+    public function handle(CreateLocationCommand $command): int
     {
-        $workshopId = new WorkshopId($command->workshopId);
+        $workshopId = new WorkshopId((int) $command->workshopId);
 
         if ($this->workshops->findById($workshopId) === null) {
             throw new RuntimeException("Workshop [{$command->workshopId}] not found.");
         }
 
-        $id = new LocationId((string) Str::uuid());
-
         $location = Location::create(
-            $id,
+            new LocationId(0),
             new LocationName($command->name),
             $command->address,
             $workshopId,
         );
 
-        $this->locations->save($location);
-
-        return $id->value;
+        return $this->locations->save($location);
     }
 }

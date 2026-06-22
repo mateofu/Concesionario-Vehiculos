@@ -10,7 +10,7 @@ use App\Domain\Vehicle\ValueObjects\VehicleId;
 
 interface IVehicleRepository
 {
-    public function save(Vehicle $vehicle): void;
+    public function save(Vehicle $vehicle): int;
 
     public function findById(VehicleId $id): ?Vehicle;
 

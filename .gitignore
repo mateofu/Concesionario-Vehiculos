@@ -20,3 +20,6 @@ docker/postgres/data/
 Thumbs.db
 *.swp
 *.swo
+
+# Postman
+postman_collection.json

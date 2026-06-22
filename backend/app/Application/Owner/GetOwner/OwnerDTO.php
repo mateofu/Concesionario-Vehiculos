@@ -7,7 +7,7 @@ namespace App\Application\Owner\GetOwner;
 final readonly class OwnerDTO
 {
     public function __construct(
-        public string $id,
+        public int $id,
         public string $first_name,
         public string $last_name,
         public string $document_type,

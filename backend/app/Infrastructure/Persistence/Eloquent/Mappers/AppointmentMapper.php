@@ -17,11 +17,11 @@ final class AppointmentMapper
     public static function toDomain(AppointmentModel $model): Appointment
     {
         return Appointment::reconstitute(
-            new AppointmentId($model->id),
-            new VehicleId($model->vehicle_id),
-            new TechnicianId($model->technician_id),
-            new WorkStationId($model->work_station_id),
-            new \DateTimeImmutable($model->scheduled_at),
+            new AppointmentId((int) $model->id),
+            new VehicleId((int) $model->vehicle_id),
+            new TechnicianId((int) $model->technician_id),
+            new WorkStationId((int) $model->work_station_id),
+            \DateTimeImmutable::createFromMutable($model->scheduled_at->toDateTime()),
             (int) $model->duration_minutes,
             AppointmentStatus::from($model->status),
             $model->notes,
@@ -31,7 +31,6 @@ final class AppointmentMapper
     public static function toModel(Appointment $appointment): array
     {
         return [
-            'id'               => $appointment->id()->value,
             'vehicle_id'       => $appointment->vehicleId()->value,
             'technician_id'    => $appointment->technicianId()->value,
             'work_station_id'  => $appointment->workStationId()->value,

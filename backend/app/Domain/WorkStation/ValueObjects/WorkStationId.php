@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\WorkStation\ValueObjects;
 
-use App\Domain\Shared\ValueObjects\UuidValueObject;
+use App\Domain\Shared\ValueObjects\IntIdValueObject;
 
-final class WorkStationId extends UuidValueObject {}
+final class WorkStationId extends IntIdValueObject {}

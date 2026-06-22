@@ -7,12 +7,21 @@ namespace App\Infrastructure\Http\Controllers;
 use App\Application\Owner\CreateOwner\CreateOwnerCommand;
 use App\Application\Owner\CreateOwner\CreateOwnerHandler;
 use App\Application\Owner\GetOwner\GetOwnerByIdHandler;
+use App\Application\Owner\GetOwner\GetOwnersHandler;
 use App\Infrastructure\Http\Requests\CreateOwnerRequest;
 use App\Infrastructure\Http\Resources\OwnerResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OwnerController
 {
+    public function index(GetOwnersHandler $handler): AnonymousResourceCollection
+    {
+        $owners = array_map(fn ($dto) => (array) $dto, $handler->handle());
+
+        return OwnerResource::collection($owners);
+    }
+
     public function show(string $id, GetOwnerByIdHandler $handler): OwnerResource
     {
         return new OwnerResource((array) $handler->handle($id));
@@ -29,6 +38,6 @@ class OwnerController
             phone:          $request->validated('phone'),
         ));
 
-        return new JsonResponse(['id' => $id], 201);
+        return new JsonResponse(['message' => 'Propietario creado exitosamente.', 'id' => $id], 201);
     }
 }

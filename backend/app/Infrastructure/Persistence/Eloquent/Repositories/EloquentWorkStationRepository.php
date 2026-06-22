@@ -14,12 +14,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\WorkStationModel;
 
 final class EloquentWorkStationRepository implements IWorkStationRepository
 {
-    public function save(WorkStation $workStation): void
+    public function save(WorkStation $workStation): int
     {
-        WorkStationModel::updateOrCreate(
-            ['id' => $workStation->id()->value],
-            WorkStationMapper::toModel($workStation),
-        );
+        $model = WorkStationModel::create(WorkStationMapper::toModel($workStation));
+
+        return $model->id;
     }
 
     public function findById(WorkStationId $id): ?WorkStation

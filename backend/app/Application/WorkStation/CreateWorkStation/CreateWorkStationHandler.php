@@ -11,7 +11,6 @@ use App\Domain\WorkStation\ValueObjects\TechnicalArea;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use App\Domain\WorkStation\ValueObjects\WorkStationName;
 use App\Domain\WorkStation\WorkStation;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class CreateWorkStationHandler
@@ -21,26 +20,22 @@ final class CreateWorkStationHandler
         private readonly ILocationRepository $locations,
     ) {}
 
-    public function handle(CreateWorkStationCommand $command): string
+    public function handle(CreateWorkStationCommand $command): int
     {
-        $locationId = new LocationId($command->locationId);
+        $locationId = new LocationId((int) $command->locationId);
 
         if ($this->locations->findById($locationId) === null) {
             throw new RuntimeException("Location [{$command->locationId}] not found.");
         }
 
-        $id = new WorkStationId((string) Str::uuid());
-
         $workStation = WorkStation::create(
-            $id,
+            new WorkStationId(0),
             new WorkStationName($command->name),
             $locationId,
             $command->stationNumber,
             new TechnicalArea($command->technicalArea),
         );
 
-        $this->workStations->save($workStation);
-
-        return $id->value;
+        return $this->workStations->save($workStation);
     }
 }

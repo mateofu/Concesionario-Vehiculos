@@ -7,8 +7,8 @@ namespace App\Application\Location\GetLocations;
 final readonly class LocationDTO
 {
     public function __construct(
-        public string $id,
-        public string $workshop_id,
+        public int $id,
+        public int $workshop_id,
         public string $name,
         public string $address,
     ) {}

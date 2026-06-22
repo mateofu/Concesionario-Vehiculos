@@ -11,7 +11,7 @@ use App\Domain\Owner\ValueObjects\OwnerId;
 
 interface IOwnerRepository
 {
-    public function save(Owner $owner): void;
+    public function save(Owner $owner): int;
 
     public function findById(OwnerId $id): ?Owner;
 

@@ -15,7 +15,7 @@ final class WorkshopMapper
     public static function toDomain(WorkshopModel $model): Workshop
     {
         return Workshop::create(
-            new WorkshopId($model->id),
+            new WorkshopId((int) $model->id),
             new WorkshopName($model->name),
             $model->address,
             new CostCenter($model->cost_center),
@@ -25,7 +25,6 @@ final class WorkshopMapper
     public static function toModel(Workshop $workshop): array
     {
         return [
-            'id'          => $workshop->id()->value,
             'name'        => $workshop->name()->value,
             'address'     => $workshop->address(),
             'cost_center' => $workshop->costCenter()->value,

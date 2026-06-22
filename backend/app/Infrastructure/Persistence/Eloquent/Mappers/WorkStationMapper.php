@@ -16,9 +16,9 @@ final class WorkStationMapper
     public static function toDomain(WorkStationModel $model): WorkStation
     {
         return WorkStation::create(
-            new WorkStationId($model->id),
+            new WorkStationId((int) $model->id),
             new WorkStationName($model->name),
-            new LocationId($model->location_id),
+            new LocationId((int) $model->location_id),
             (int) $model->station_number,
             new TechnicalArea($model->technical_area),
         );
@@ -27,7 +27,6 @@ final class WorkStationMapper
     public static function toModel(WorkStation $workStation): array
     {
         return [
-            'id'             => $workStation->id()->value,
             'location_id'    => $workStation->locationId()->value,
             'name'           => $workStation->name()->value,
             'station_number' => $workStation->stationNumber(),

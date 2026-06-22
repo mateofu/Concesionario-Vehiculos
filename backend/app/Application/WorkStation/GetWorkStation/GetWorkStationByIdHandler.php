@@ -16,7 +16,7 @@ final class GetWorkStationByIdHandler
 
     public function handle(string $id): WorkStationDTO
     {
-        $workStation = $this->workStations->findById(new WorkStationId($id));
+        $workStation = $this->workStations->findById(new WorkStationId((int) $id));
 
         if ($workStation === null) {
             throw new RuntimeException("WorkStation [{$id}] not found.");

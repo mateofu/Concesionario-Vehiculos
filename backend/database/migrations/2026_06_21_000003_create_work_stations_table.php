@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('work_stations', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('location_id')->constrained('locations')->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('location_id')->constrained('locations')->cascadeOnDelete();
             $table->string('name');
             $table->timestamps();
         });

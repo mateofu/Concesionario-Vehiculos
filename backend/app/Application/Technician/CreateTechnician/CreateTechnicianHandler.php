@@ -11,7 +11,6 @@ use App\Domain\Technician\ValueObjects\TechnicianId;
 use App\Domain\Technician\ValueObjects\TechnicianName;
 use App\Domain\Technician\ValueObjects\TechnicianPhone;
 use App\Domain\Technician\ValueObjects\TechnicianSpecialty;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class CreateTechnicianHandler
@@ -20,7 +19,7 @@ final class CreateTechnicianHandler
         private readonly ITechnicianRepository $technicians,
     ) {}
 
-    public function handle(CreateTechnicianCommand $command): string
+    public function handle(CreateTechnicianCommand $command): int
     {
         $email = new TechnicianEmail($command->email);
 
@@ -28,18 +27,14 @@ final class CreateTechnicianHandler
             throw new RuntimeException("A technician with email [{$command->email}] already exists.");
         }
 
-        $id = new TechnicianId((string) Str::uuid());
-
         $technician = Technician::create(
-            $id,
+            new TechnicianId(0),
             new TechnicianName($command->name),
             $email,
             new TechnicianPhone($command->phone),
             new TechnicianSpecialty($command->specialty),
         );
 
-        $this->technicians->save($technician);
-
-        return $id->value;
+        return $this->technicians->save($technician);
     }
 }

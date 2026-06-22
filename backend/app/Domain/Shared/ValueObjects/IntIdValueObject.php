@@ -6,19 +6,19 @@ namespace App\Domain\Shared\ValueObjects;
 
 use InvalidArgumentException;
 
-abstract class UuidValueObject
+abstract class IntIdValueObject
 {
     public function __construct(
-        public readonly string $value,
+        public readonly int $value,
     ) {
-        if (!preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $value)) {
-            throw new InvalidArgumentException("Invalid UUID: {$value}");
+        if ($value < 0) {
+            throw new InvalidArgumentException(static::class . ' must be a non-negative integer.');
         }
     }
 
     public function __toString(): string
     {
-        return $this->value;
+        return (string) $this->value;
     }
 
     public function equals(self $other): bool

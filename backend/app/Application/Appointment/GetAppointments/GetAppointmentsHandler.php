@@ -24,8 +24,8 @@ final class GetAppointmentsHandler
     ): array {
         $appointments = $this->appointments->findAll(
             status: $status !== null ? AppointmentStatus::from($status) : null,
-            technicianId: $technicianId !== null ? new TechnicianId($technicianId) : null,
-            vehicleId: $vehicleId !== null ? new VehicleId($vehicleId) : null,
+            technicianId: $technicianId !== null ? new TechnicianId((int) $technicianId) : null,
+            vehicleId: $vehicleId !== null ? new VehicleId((int) $vehicleId) : null,
             date: $date !== null ? new \DateTimeImmutable($date) : null,
         );
 

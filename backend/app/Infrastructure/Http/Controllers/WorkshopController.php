@@ -35,6 +35,6 @@ class WorkshopController
             costCenter: $request->validated('cost_center'),
         ));
 
-        return new JsonResponse(['id' => $id], 201);
+        return new JsonResponse(['message' => 'Taller creado exitosamente.', 'id' => $id], 201);
     }
 }

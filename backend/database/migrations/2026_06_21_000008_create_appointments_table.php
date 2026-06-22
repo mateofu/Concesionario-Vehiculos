@@ -9,10 +9,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('appointments', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('vehicle_id')->constrained('vehicles');
-            $table->foreignUuid('technician_id')->constrained('technicians');
-            $table->foreignUuid('work_station_id')->constrained('work_stations');
+            $table->id();
+            $table->foreignId('vehicle_id')->constrained('vehicles');
+            $table->foreignId('technician_id')->constrained('technicians');
+            $table->foreignId('work_station_id')->constrained('work_stations');
             $table->dateTime('scheduled_at');
             $table->string('status')->default('pending');
             $table->text('notes')->nullable();

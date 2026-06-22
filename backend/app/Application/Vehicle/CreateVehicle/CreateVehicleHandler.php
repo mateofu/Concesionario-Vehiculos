@@ -12,7 +12,6 @@ use App\Domain\Vehicle\ValueObjects\VehicleId;
 use App\Domain\Vehicle\ValueObjects\VehicleStyle;
 use App\Domain\Vehicle\ValueObjects\VehicleYear;
 use App\Domain\Vehicle\Vehicle;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class CreateVehicleHandler
@@ -22,9 +21,9 @@ final class CreateVehicleHandler
         private readonly IOwnerRepository $owners,
     ) {}
 
-    public function handle(CreateVehicleCommand $command): string
+    public function handle(CreateVehicleCommand $command): int
     {
-        $ownerId = new OwnerId($command->ownerId);
+        $ownerId = new OwnerId((int) $command->ownerId);
 
         if ($this->owners->findById($ownerId) === null) {
             throw new RuntimeException("Owner [{$command->ownerId}] not found.");
@@ -36,10 +35,8 @@ final class CreateVehicleHandler
             throw new RuntimeException("A vehicle with license plate [{$plate->value}] already exists.");
         }
 
-        $id = new VehicleId((string) Str::uuid());
-
         $vehicle = Vehicle::create(
-            $id,
+            new VehicleId(0),
             $ownerId,
             $plate,
             $command->brand,
@@ -48,8 +45,6 @@ final class CreateVehicleHandler
             new VehicleStyle($command->style),
         );
 
-        $this->vehicles->save($vehicle);
-
-        return $id->value;
+        return $this->vehicles->save($vehicle);
     }
 }

@@ -13,12 +13,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\LocationModel;
 
 final class EloquentLocationRepository implements ILocationRepository
 {
-    public function save(Location $location): void
+    public function save(Location $location): int
     {
-        LocationModel::updateOrCreate(
-            ['id' => $location->id()->value],
-            LocationMapper::toModel($location),
-        );
+        $model = LocationModel::create(LocationMapper::toModel($location));
+
+        return $model->id;
     }
 
     public function findById(LocationId $id): ?Location

@@ -12,13 +12,13 @@ use App\Domain\WorkStation\ValueObjects\WorkStationId;
 
 interface IAppointmentRepository
 {
-    public function save(Appointment $appointment): void;
+    public function save(Appointment $appointment): int;
+
+    public function update(Appointment $appointment): void;
 
     public function findById(AppointmentId $id): ?Appointment;
 
-    /**
-     * @return Appointment[]
-     */
+    /** @return Appointment[] */
     public function findAll(
         ?AppointmentStatus $status = null,
         ?TechnicianId $technicianId = null,
@@ -26,10 +26,6 @@ interface IAppointmentRepository
         ?\DateTimeImmutable $date = null,
     ): array;
 
-    /**
-     * Returns true if there is an existing active appointment at the given work station
-     * that overlaps with the proposed time slot [start, start + durationMinutes).
-     */
     public function hasOverlap(
         WorkStationId $workStationId,
         \DateTimeImmutable $start,

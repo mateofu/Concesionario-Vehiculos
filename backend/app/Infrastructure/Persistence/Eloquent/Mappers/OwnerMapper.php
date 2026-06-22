@@ -19,7 +19,7 @@ final class OwnerMapper
     public static function toDomain(OwnerModel $model): Owner
     {
         return Owner::create(
-            new OwnerId($model->id),
+            new OwnerId((int) $model->id),
             new OwnerFirstName($model->first_name),
             new OwnerLastName($model->last_name),
             DocumentType::from($model->document_type),
@@ -32,7 +32,6 @@ final class OwnerMapper
     public static function toModel(Owner $owner): array
     {
         return [
-            'id'              => $owner->id()->value,
             'first_name'      => $owner->firstName()->value,
             'last_name'       => $owner->lastName()->value,
             'document_type'   => $owner->documentType()->value,

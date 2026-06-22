@@ -17,8 +17,8 @@ final class VehicleMapper
     public static function toDomain(VehicleModel $model): Vehicle
     {
         return Vehicle::create(
-            new VehicleId($model->id),
-            new OwnerId($model->owner_id),
+            new VehicleId((int) $model->id),
+            new OwnerId((int) $model->owner_id),
             new LicensePlate($model->license_plate),
             $model->brand,
             $model->model,
@@ -30,7 +30,6 @@ final class VehicleMapper
     public static function toModel(Vehicle $vehicle): array
     {
         return [
-            'id'            => $vehicle->id()->value,
             'owner_id'      => $vehicle->ownerId()->value,
             'license_plate' => $vehicle->licensePlate()->value,
             'brand'         => $vehicle->brand(),

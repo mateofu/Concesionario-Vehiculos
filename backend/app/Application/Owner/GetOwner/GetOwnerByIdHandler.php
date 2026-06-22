@@ -16,7 +16,7 @@ final class GetOwnerByIdHandler
 
     public function handle(string $id): OwnerDTO
     {
-        $owner = $this->owners->findById(new OwnerId($id));
+        $owner = $this->owners->findById(new OwnerId((int) $id));
 
         if ($owner === null) {
             throw new RuntimeException("Owner [{$id}] not found.");

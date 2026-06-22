@@ -51,7 +51,7 @@ class AppointmentController
             notes:           $request->validated('notes'),
         ));
 
-        return new JsonResponse(['id' => $id], 201);
+        return new JsonResponse(['message' => 'Cita creada exitosamente.', 'id' => $id], 201);
     }
 
     public function updateStatus(
@@ -64,13 +64,13 @@ class AppointmentController
             status:        $request->validated('status'),
         ));
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse(['message' => 'Estado de la cita actualizado exitosamente.'], 200);
     }
 
     public function cancel(string $id, CancelAppointmentHandler $handler): JsonResponse
     {
         $handler->handle($id);
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse(['message' => 'Cita cancelada exitosamente.'], 200);
     }
 }
