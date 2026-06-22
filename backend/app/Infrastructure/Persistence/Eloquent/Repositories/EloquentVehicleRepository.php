@@ -14,12 +14,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\VehicleModel;
 
 final class EloquentVehicleRepository implements IVehicleRepository
 {
-    public function save(Vehicle $vehicle): void
+    public function save(Vehicle $vehicle): int
     {
-        VehicleModel::updateOrCreate(
-            ['id' => $vehicle->id()->value],
-            VehicleMapper::toModel($vehicle),
-        );
+        $model = VehicleModel::create(VehicleMapper::toModel($vehicle));
+
+        return $model->id;
     }
 
     public function findById(VehicleId $id): ?Vehicle

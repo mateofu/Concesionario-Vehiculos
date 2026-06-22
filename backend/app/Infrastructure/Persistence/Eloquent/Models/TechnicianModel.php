@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class TechnicianModel extends Model
 {
-    use HasUuids;
-
     protected $table = 'technicians';
 
-    protected $fillable = ['id', 'name', 'email', 'phone', 'specialty', 'is_available'];
+    protected $fillable = ['name', 'email', 'phone', 'specialty', 'is_available'];
 
     protected $casts = ['is_available' => 'boolean'];
 

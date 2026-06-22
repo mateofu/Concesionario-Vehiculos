@@ -9,7 +9,6 @@ use App\Domain\Workshop\ValueObjects\CostCenter;
 use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Domain\Workshop\ValueObjects\WorkshopName;
 use App\Domain\Workshop\Workshop;
-use Illuminate\Support\Str;
 
 final class CreateWorkshopHandler
 {
@@ -17,19 +16,15 @@ final class CreateWorkshopHandler
         private readonly IWorkshopRepository $workshops,
     ) {}
 
-    public function handle(CreateWorkshopCommand $command): string
+    public function handle(CreateWorkshopCommand $command): int
     {
-        $id = new WorkshopId((string) Str::uuid());
-
         $workshop = Workshop::create(
-            $id,
+            new WorkshopId(0),
             new WorkshopName($command->name),
             $command->address,
             new CostCenter($command->costCenter),
         );
 
-        $this->workshops->save($workshop);
-
-        return $id->value;
+        return $this->workshops->save($workshop);
     }
 }

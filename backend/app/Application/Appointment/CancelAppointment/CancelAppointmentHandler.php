@@ -16,7 +16,7 @@ final class CancelAppointmentHandler
 
     public function handle(string $appointmentId): void
     {
-        $appointment = $this->appointments->findById(new AppointmentId($appointmentId));
+        $appointment = $this->appointments->findById(new AppointmentId((int) $appointmentId));
 
         if ($appointment === null) {
             throw new RuntimeException("Appointment [{$appointmentId}] not found.");
@@ -24,6 +24,6 @@ final class CancelAppointmentHandler
 
         $appointment->cancel();
 
-        $this->appointments->save($appointment);
+        $this->appointments->update($appointment);
     }
 }

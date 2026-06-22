@@ -4,18 +4,14 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AppointmentModel extends Model
 {
-    use HasUuids;
-
     protected $table = 'appointments';
 
     protected $fillable = [
-        'id',
         'vehicle_id',
         'technician_id',
         'work_station_id',

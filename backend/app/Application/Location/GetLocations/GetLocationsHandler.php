@@ -17,7 +17,7 @@ final class GetLocationsHandler
     public function handle(?string $workshopId = null): array
     {
         $locations = $workshopId !== null
-            ? $this->locations->findByWorkshop(new WorkshopId($workshopId))
+            ? $this->locations->findByWorkshop(new WorkshopId((int) $workshopId))
             : $this->locations->findAll();
 
         return array_map(

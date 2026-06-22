@@ -7,8 +7,8 @@ namespace App\Application\WorkStation\GetWorkStation;
 final readonly class WorkStationDTO
 {
     public function __construct(
-        public string $id,
-        public string $location_id,
+        public int $id,
+        public int $location_id,
         public string $name,
         public int $station_number,
         public string $technical_area,

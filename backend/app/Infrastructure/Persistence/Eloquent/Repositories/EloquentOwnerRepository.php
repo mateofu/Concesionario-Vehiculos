@@ -15,12 +15,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\OwnerModel;
 
 final class EloquentOwnerRepository implements IOwnerRepository
 {
-    public function save(Owner $owner): void
+    public function save(Owner $owner): int
     {
-        OwnerModel::updateOrCreate(
-            ['id' => $owner->id()->value],
-            OwnerMapper::toModel($owner),
-        );
+        $model = OwnerModel::create(OwnerMapper::toModel($owner));
+
+        return $model->id;
     }
 
     public function findById(OwnerId $id): ?Owner

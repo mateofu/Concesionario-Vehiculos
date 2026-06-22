@@ -17,7 +17,7 @@ final class TechnicianMapper
     public static function toDomain(TechnicianModel $model): Technician
     {
         return Technician::create(
-            new TechnicianId($model->id),
+            new TechnicianId((int) $model->id),
             new TechnicianName($model->name),
             new TechnicianEmail($model->email),
             new TechnicianPhone($model->phone),
@@ -29,7 +29,6 @@ final class TechnicianMapper
     public static function toModel(Technician $technician): array
     {
         return [
-            'id'           => $technician->id()->value,
             'name'         => $technician->name()->value,
             'email'        => $technician->email()->value,
             'phone'        => $technician->phone()->value,

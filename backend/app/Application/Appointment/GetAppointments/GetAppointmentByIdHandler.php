@@ -16,7 +16,7 @@ final class GetAppointmentByIdHandler
 
     public function handle(string $id): AppointmentDTO
     {
-        $appointment = $this->appointments->findById(new AppointmentId($id));
+        $appointment = $this->appointments->findById(new AppointmentId((int) $id));
 
         if ($appointment === null) {
             throw new RuntimeException("Appointment [{$id}] not found.");

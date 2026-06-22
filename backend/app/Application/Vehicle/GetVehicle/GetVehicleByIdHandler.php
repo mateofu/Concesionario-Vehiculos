@@ -16,7 +16,7 @@ final class GetVehicleByIdHandler
 
     public function handle(string $id): VehicleDTO
     {
-        $vehicle = $this->vehicles->findById(new VehicleId($id));
+        $vehicle = $this->vehicles->findById(new VehicleId((int) $id));
 
         if ($vehicle === null) {
             throw new RuntimeException("Vehicle [{$id}] not found.");

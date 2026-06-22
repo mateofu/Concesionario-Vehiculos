@@ -13,7 +13,6 @@ use App\Domain\Owner\ValueObjects\OwnerId;
 use App\Domain\Owner\ValueObjects\OwnerFirstName;
 use App\Domain\Owner\ValueObjects\OwnerLastName;
 use App\Domain\Owner\ValueObjects\OwnerPhone;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class CreateOwnerHandler
@@ -22,7 +21,7 @@ final class CreateOwnerHandler
         private readonly IOwnerRepository $owners,
     ) {}
 
-    public function handle(CreateOwnerCommand $command): string
+    public function handle(CreateOwnerCommand $command): int
     {
         $email        = new OwnerEmail($command->email);
         $documentType = DocumentType::from($command->documentType);
@@ -38,10 +37,8 @@ final class CreateOwnerHandler
             );
         }
 
-        $id = new OwnerId((string) Str::uuid());
-
         $owner = Owner::create(
-            $id,
+            new OwnerId(0),
             new OwnerFirstName($command->firstName),
             new OwnerLastName($command->lastName),
             $documentType,
@@ -50,8 +47,6 @@ final class CreateOwnerHandler
             new OwnerPhone($command->phone),
         );
 
-        $this->owners->save($owner);
-
-        return $id->value;
+        return $this->owners->save($owner);
     }
 }

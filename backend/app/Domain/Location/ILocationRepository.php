@@ -9,7 +9,7 @@ use App\Domain\Workshop\ValueObjects\WorkshopId;
 
 interface ILocationRepository
 {
-    public function save(Location $location): void;
+    public function save(Location $location): int;
 
     public function findById(LocationId $id): ?Location;
 

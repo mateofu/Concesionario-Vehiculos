@@ -10,7 +10,7 @@ use App\Domain\WorkStation\ValueObjects\WorkStationId;
 
 interface IWorkStationRepository
 {
-    public function save(WorkStation $workStation): void;
+    public function save(WorkStation $workStation): int;
 
     public function findById(WorkStationId $id): ?WorkStation;
 

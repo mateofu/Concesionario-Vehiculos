@@ -16,12 +16,17 @@ use App\Infrastructure\Persistence\Eloquent\Models\AppointmentModel;
 
 final class EloquentAppointmentRepository implements IAppointmentRepository
 {
-    public function save(Appointment $appointment): void
+    public function save(Appointment $appointment): int
     {
-        AppointmentModel::updateOrCreate(
-            ['id' => $appointment->id()->value],
-            AppointmentMapper::toModel($appointment),
-        );
+        $model = AppointmentModel::create(AppointmentMapper::toModel($appointment));
+
+        return $model->id;
+    }
+
+    public function update(Appointment $appointment): void
+    {
+        AppointmentModel::where('id', $appointment->id()->value)
+            ->update(AppointmentMapper::toModel($appointment));
     }
 
     public function findById(AppointmentId $id): ?Appointment

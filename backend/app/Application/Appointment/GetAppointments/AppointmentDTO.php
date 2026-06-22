@@ -7,10 +7,10 @@ namespace App\Application\Appointment\GetAppointments;
 final readonly class AppointmentDTO
 {
     public function __construct(
-        public string $id,
-        public string $vehicle_id,
-        public string $technician_id,
-        public string $work_station_id,
+        public int $id,
+        public int $vehicle_id,
+        public int $technician_id,
+        public int $work_station_id,
         public string $scheduled_at,
         public int $duration_minutes,
         public string $status,

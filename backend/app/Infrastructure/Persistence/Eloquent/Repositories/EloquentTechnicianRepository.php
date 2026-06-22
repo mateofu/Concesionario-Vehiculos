@@ -13,12 +13,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\TechnicianModel;
 
 final class EloquentTechnicianRepository implements ITechnicianRepository
 {
-    public function save(Technician $technician): void
+    public function save(Technician $technician): int
     {
-        TechnicianModel::updateOrCreate(
-            ['id' => $technician->id()->value],
-            TechnicianMapper::toModel($technician),
-        );
+        $model = TechnicianModel::create(TechnicianMapper::toModel($technician));
+
+        return $model->id;
     }
 
     public function findById(TechnicianId $id): ?Technician

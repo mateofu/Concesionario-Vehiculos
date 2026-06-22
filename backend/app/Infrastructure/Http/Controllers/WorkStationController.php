@@ -9,13 +9,26 @@ use App\Application\WorkStation\AssignTechnician\AssignTechnicianHandler;
 use App\Application\WorkStation\CreateWorkStation\CreateWorkStationCommand;
 use App\Application\WorkStation\CreateWorkStation\CreateWorkStationHandler;
 use App\Application\WorkStation\GetWorkStation\GetWorkStationByIdHandler;
+use App\Application\WorkStation\GetWorkStation\GetWorkStationsHandler;
 use App\Infrastructure\Http\Requests\AssignTechnicianRequest;
 use App\Infrastructure\Http\Requests\CreateWorkStationRequest;
 use App\Infrastructure\Http\Resources\WorkStationResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class WorkStationController
 {
+    public function index(Request $request, GetWorkStationsHandler $handler): AnonymousResourceCollection
+    {
+        $workStations = array_map(
+            fn ($dto) => (array) $dto,
+            $handler->handle($request->query('location_id')),
+        );
+
+        return WorkStationResource::collection($workStations);
+    }
+
     public function show(string $id, GetWorkStationByIdHandler $handler): WorkStationResource
     {
         return new WorkStationResource((array) $handler->handle($id));
@@ -30,7 +43,7 @@ class WorkStationController
             technicalArea: $request->validated('technical_area'),
         ));
 
-        return new JsonResponse(['id' => $id], 201);
+        return new JsonResponse(['message' => 'Puesto de trabajo creado exitosamente.', 'id' => $id], 201);
     }
 
     public function assignTechnician(
@@ -43,6 +56,6 @@ class WorkStationController
             technicianId:  $request->validated('technician_id'),
         ));
 
-        return new JsonResponse(null, 204);
+        return new JsonResponse(['message' => 'Técnico asignado exitosamente.'], 200);
     }
 }

@@ -17,7 +17,7 @@ final class UpdateAppointmentStatusHandler
 
     public function handle(UpdateAppointmentStatusCommand $command): void
     {
-        $appointment = $this->appointments->findById(new AppointmentId($command->appointmentId));
+        $appointment = $this->appointments->findById(new AppointmentId((int) $command->appointmentId));
 
         if ($appointment === null) {
             throw new RuntimeException("Appointment [{$command->appointmentId}] not found.");
@@ -25,6 +25,6 @@ final class UpdateAppointmentStatusHandler
 
         $appointment->updateStatus(AppointmentStatus::from($command->status));
 
-        $this->appointments->save($appointment);
+        $this->appointments->update($appointment);
     }
 }

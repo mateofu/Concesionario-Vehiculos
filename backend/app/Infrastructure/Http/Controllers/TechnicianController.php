@@ -36,6 +36,6 @@ class TechnicianController
             specialty: $request->validated('specialty'),
         ));
 
-        return new JsonResponse(['id' => $id], 201);
+        return new JsonResponse(['message' => 'Técnico creado exitosamente.', 'id' => $id], 201);
     }
 }

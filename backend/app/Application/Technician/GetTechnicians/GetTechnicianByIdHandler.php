@@ -16,7 +16,7 @@ final class GetTechnicianByIdHandler
 
     public function handle(string $id): TechnicianDTO
     {
-        $technician = $this->technicians->findById(new TechnicianId($id));
+        $technician = $this->technicians->findById(new TechnicianId((int) $id));
 
         if ($technician === null) {
             throw new RuntimeException("Technician [{$id}] not found.");

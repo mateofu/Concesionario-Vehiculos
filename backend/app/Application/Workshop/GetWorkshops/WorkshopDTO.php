@@ -7,7 +7,7 @@ namespace App\Application\Workshop\GetWorkshops;
 final readonly class WorkshopDTO
 {
     public function __construct(
-        public string $id,
+        public int $id,
         public string $name,
         public string $address,
         public string $cost_center,

@@ -16,7 +16,7 @@ final class GetWorkshopByIdHandler
 
     public function handle(string $id): WorkshopDTO
     {
-        $workshop = $this->workshops->findById(new WorkshopId($id));
+        $workshop = $this->workshops->findById(new WorkshopId((int) $id));
 
         if ($workshop === null) {
             throw new RuntimeException("Workshop [{$id}] not found.");

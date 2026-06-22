@@ -12,12 +12,11 @@ use App\Infrastructure\Persistence\Eloquent\Models\WorkshopModel;
 
 final class EloquentWorkshopRepository implements IWorkshopRepository
 {
-    public function save(Workshop $workshop): void
+    public function save(Workshop $workshop): int
     {
-        WorkshopModel::updateOrCreate(
-            ['id' => $workshop->id()->value],
-            WorkshopMapper::toModel($workshop),
-        );
+        $model = WorkshopModel::create(WorkshopMapper::toModel($workshop));
+
+        return $model->id;
     }
 
     public function findById(WorkshopId $id): ?Workshop

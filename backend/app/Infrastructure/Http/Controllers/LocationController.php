@@ -51,6 +51,6 @@ class LocationController extends Controller
             ),
         );
 
-        return response()->json(['id' => $id], 201);
+        return response()->json(['message' => 'Sede creada exitosamente.', 'id' => $id], 201);
     }
 }

@@ -19,8 +19,8 @@ final class AssignTechnicianHandler
 
     public function handle(AssignTechnicianCommand $command): void
     {
-        $workStationId = new WorkStationId($command->workStationId);
-        $technicianId  = new TechnicianId($command->technicianId);
+        $workStationId = new WorkStationId((int) $command->workStationId);
+        $technicianId  = new TechnicianId((int) $command->technicianId);
 
         if ($this->workStations->findById($workStationId) === null) {
             throw new RuntimeException("WorkStation [{$command->workStationId}] not found.");

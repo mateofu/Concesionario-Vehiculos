@@ -16,7 +16,7 @@ final class GetLocationByIdHandler
 
     public function handle(string $id): LocationDTO
     {
-        $location = $this->locations->findById(new LocationId($id));
+        $location = $this->locations->findById(new LocationId((int) $id));
 
         if ($location === null) {
             throw new RuntimeException("Location [{$id}] not found.");

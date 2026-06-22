@@ -5,14 +5,18 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Appointment\IAppointmentRepository;
+use App\Domain\BlockedPeriod\IBlockedPeriodRepository;
 use App\Domain\Location\ILocationRepository;
+use App\Domain\OperatingSchedule\IOperatingScheduleRepository;
 use App\Domain\Owner\IOwnerRepository;
 use App\Domain\Technician\ITechnicianRepository;
 use App\Domain\Vehicle\IVehicleRepository;
 use App\Domain\WorkStation\IWorkStationRepository;
 use App\Domain\Workshop\IWorkshopRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentAppointmentRepository;
+use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentBlockedPeriodRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentLocationRepository;
+use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentOperatingScheduleRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentOwnerRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentTechnicianRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\EloquentVehicleRepository;
@@ -31,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ITechnicianRepository::class, EloquentTechnicianRepository::class);
         $this->app->bind(IWorkStationRepository::class, EloquentWorkStationRepository::class);
         $this->app->bind(IAppointmentRepository::class, EloquentAppointmentRepository::class);
+        $this->app->bind(IOperatingScheduleRepository::class, EloquentOperatingScheduleRepository::class);
+        $this->app->bind(IBlockedPeriodRepository::class, EloquentBlockedPeriodRepository::class);
     }
 
     public function boot(): void {}

@@ -9,7 +9,7 @@ use App\Domain\Technician\ValueObjects\TechnicianId;
 
 interface ITechnicianRepository
 {
-    public function save(Technician $technician): void;
+    public function save(Technician $technician): int;
 
     public function findById(TechnicianId $id): ?Technician;
 

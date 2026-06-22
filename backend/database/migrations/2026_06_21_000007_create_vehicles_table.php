@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('vehicles', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('owner_id')->constrained('owners')->cascadeOnDelete();
+            $table->id();
+            $table->foreignId('owner_id')->constrained('owners')->cascadeOnDelete();
             $table->string('license_plate')->unique();
             $table->string('brand');
             $table->string('model');

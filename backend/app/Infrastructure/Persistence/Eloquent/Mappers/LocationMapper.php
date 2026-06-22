@@ -15,17 +15,16 @@ final class LocationMapper
     public static function toDomain(LocationModel $model): Location
     {
         return Location::create(
-            new LocationId($model->id),
+            new LocationId((int) $model->id),
             new LocationName($model->name),
             $model->address,
-            new WorkshopId($model->workshop_id),
+            new WorkshopId((int) $model->workshop_id),
         );
     }
 
     public static function toModel(Location $location): array
     {
         return [
-            'id'          => $location->id()->value,
             'workshop_id' => $location->workshopId()->value,
             'name'        => $location->name()->value,
             'address'     => $location->address(),
