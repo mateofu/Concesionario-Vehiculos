@@ -1,0 +1,66 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Eloquent\Repositories;
+
+use App\Domain\Technician\ValueObjects\TechnicianId;
+use App\Domain\Workshop\ValueObjects\WorkshopId;
+use App\Domain\WorkStation\IWorkStationRepository;
+use App\Domain\WorkStation\ValueObjects\WorkStationId;
+use App\Domain\WorkStation\WorkStation;
+use App\Infrastructure\Persistence\Eloquent\Mappers\WorkStationMapper;
+use App\Infrastructure\Persistence\Eloquent\Models\WorkStationModel;
+
+final class EloquentWorkStationRepository implements IWorkStationRepository
+{
+    public function save(WorkStation $workStation): int
+    {
+        $model = WorkStationModel::create(WorkStationMapper::toModel($workStation));
+
+        return $model->id;
+    }
+
+    public function findById(WorkStationId $id): ?WorkStation
+    {
+        $model = WorkStationModel::find($id->value);
+
+        return $model ? WorkStationMapper::toDomain($model) : null;
+    }
+
+    public function findByWorkshop(WorkshopId $workshopId): array
+    {
+        return WorkStationModel::where('workshop_id', $workshopId->value)
+            ->get()
+            ->map(fn ($m) => WorkStationMapper::toDomain($m))
+            ->all();
+    }
+
+    public function findAll(): array
+    {
+        return WorkStationModel::all()
+            ->map(fn ($m) => WorkStationMapper::toDomain($m))
+            ->all();
+    }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return WorkStationModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => WorkStationMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return WorkStationModel::count();
+    }
+
+    public function assignTechnician(WorkStationId $workStationId, TechnicianId $technicianId): void
+    {
+        $model = WorkStationModel::findOrFail($workStationId->value);
+
+        $model->technicians()->syncWithoutDetaching([$technicianId->value]);
+    }
+}

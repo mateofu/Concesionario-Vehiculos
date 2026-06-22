@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Eloquent\Repositories;
+
+use App\Domain\Technician\ITechnicianRepository;
+use App\Domain\Technician\Technician;
+use App\Domain\Technician\ValueObjects\TechnicianEmail;
+use App\Domain\Technician\ValueObjects\TechnicianId;
+use App\Infrastructure\Persistence\Eloquent\Mappers\TechnicianMapper;
+use App\Infrastructure\Persistence\Eloquent\Models\TechnicianModel;
+
+final class EloquentTechnicianRepository implements ITechnicianRepository
+{
+    public function save(Technician $technician): int
+    {
+        $model = TechnicianModel::create(TechnicianMapper::toModel($technician));
+
+        return $model->id;
+    }
+
+    public function findById(TechnicianId $id): ?Technician
+    {
+        $model = TechnicianModel::find($id->value);
+
+        return $model ? TechnicianMapper::toDomain($model) : null;
+    }
+
+    public function findByEmail(TechnicianEmail $email): ?Technician
+    {
+        $model = TechnicianModel::where('email', $email->value)->first();
+
+        return $model ? TechnicianMapper::toDomain($model) : null;
+    }
+
+    public function findAll(): array
+    {
+        return TechnicianModel::all()
+            ->map(fn ($m) => TechnicianMapper::toDomain($m))
+            ->all();
+    }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return TechnicianModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => TechnicianMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return TechnicianModel::count();
+    }
+}

@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Application\WorkStation\GetWorkStation;
+
+use App\Domain\WorkStation\IWorkStationRepository;
+use App\Domain\WorkStation\ValueObjects\WorkStationId;
+use RuntimeException;
+
+final class GetWorkStationByIdHandler
+{
+    public function __construct(
+        private readonly IWorkStationRepository $workStations,
+    ) {}
+
+    public function handle(string $id): WorkStationDTO
+    {
+        $workStation = $this->workStations->findById(new WorkStationId((int) $id));
+
+        if ($workStation === null) {
+            throw new RuntimeException("WorkStation [{$id}] not found.");
+        }
+
+        return new WorkStationDTO(
+            id: $workStation->id()->value,
+            workshop_id: $workStation->workshopId()->value,
+            name: $workStation->name()->value,
+            station_number: $workStation->stationNumber(),
+            technical_area: $workStation->technicalArea()->value,
+        );
+    }
+}

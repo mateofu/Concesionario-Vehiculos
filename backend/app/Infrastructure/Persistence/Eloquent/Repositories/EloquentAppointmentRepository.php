@@ -1,0 +1,147 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Eloquent\Repositories;
+
+use App\Domain\Appointment\Appointment;
+use App\Domain\Appointment\IAppointmentRepository;
+use App\Domain\Appointment\ValueObjects\AppointmentId;
+use App\Domain\Appointment\ValueObjects\AppointmentStatus;
+use App\Domain\Technician\ValueObjects\TechnicianId;
+use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\WorkStation\ValueObjects\WorkStationId;
+use App\Infrastructure\Persistence\Eloquent\Mappers\AppointmentMapper;
+use App\Infrastructure\Persistence\Eloquent\Models\AppointmentModel;
+
+final class EloquentAppointmentRepository implements IAppointmentRepository
+{
+    public function save(Appointment $appointment): int
+    {
+        $model = AppointmentModel::create(AppointmentMapper::toModel($appointment));
+
+        return $model->id;
+    }
+
+    public function update(Appointment $appointment): void
+    {
+        AppointmentModel::where('id', $appointment->id()->value)
+            ->update(AppointmentMapper::toModel($appointment));
+    }
+
+    public function findById(AppointmentId $id): ?Appointment
+    {
+        $model = AppointmentModel::find($id->value);
+
+        return $model ? AppointmentMapper::toDomain($model) : null;
+    }
+
+    public function findAll(
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): array {
+        $query = AppointmentModel::query();
+
+        if ($status !== null) {
+            $query->where('status', $status->value);
+        }
+
+        if ($technicianId !== null) {
+            $query->where('technician_id', $technicianId->value);
+        }
+
+        if ($vehicleId !== null) {
+            $query->where('vehicle_id', $vehicleId->value);
+        }
+
+        if ($date !== null) {
+            $query->whereDate('scheduled_at', $date->format('Y-m-d'));
+        }
+
+        return $query->orderBy('scheduled_at')
+            ->get()
+            ->map(fn ($m) => AppointmentMapper::toDomain($m))
+            ->all();
+    }
+
+    public function findPaginated(
+        int $page,
+        int $perPage,
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): array {
+        $query = AppointmentModel::query();
+
+        if ($status !== null) {
+            $query->where('status', $status->value);
+        }
+        if ($technicianId !== null) {
+            $query->where('technician_id', $technicianId->value);
+        }
+        if ($vehicleId !== null) {
+            $query->where('vehicle_id', $vehicleId->value);
+        }
+        if ($date !== null) {
+            $query->whereDate('scheduled_at', $date->format('Y-m-d'));
+        }
+
+        return $query->orderBy('scheduled_at')
+            ->skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => AppointmentMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(
+        ?AppointmentStatus $status = null,
+        ?TechnicianId $technicianId = null,
+        ?VehicleId $vehicleId = null,
+        ?\DateTimeImmutable $date = null,
+    ): int {
+        $query = AppointmentModel::query();
+
+        if ($status !== null) {
+            $query->where('status', $status->value);
+        }
+        if ($technicianId !== null) {
+            $query->where('technician_id', $technicianId->value);
+        }
+        if ($vehicleId !== null) {
+            $query->where('vehicle_id', $vehicleId->value);
+        }
+        if ($date !== null) {
+            $query->whereDate('scheduled_at', $date->format('Y-m-d'));
+        }
+
+        return $query->count();
+    }
+
+    public function hasOverlap(
+        WorkStationId $workStationId,
+        \DateTimeImmutable $start,
+        int $durationMinutes,
+        ?AppointmentId $excludeId = null,
+    ): bool {
+        $end = $start->modify("+{$durationMinutes} minutes");
+
+        $query = AppointmentModel::query()
+            ->where('work_station_id', $workStationId->value)
+            ->whereNotIn('status', [AppointmentStatus::CANCELADA->value])
+            ->where('scheduled_at', '<', $end->format('Y-m-d H:i:s'))
+            ->whereRaw(
+                "scheduled_at + (duration_minutes * interval '1 minute') > ?",
+                [$start->format('Y-m-d H:i:s')],
+            );
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId->value);
+        }
+
+        return $query->exists();
+    }
+}
