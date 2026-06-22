@@ -16,6 +16,7 @@ class CreateVehicleRequest extends FormRequest
             'brand'         => ['required', 'string', 'max:100'],
             'model'         => ['required', 'string', 'max:100'],
             'year'          => ['required', 'integer', 'min:1900', 'max:' . (date('Y') + 1)],
+            'style'         => ['required', 'string', 'max:100'],
         ];
     }
 }

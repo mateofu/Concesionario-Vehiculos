@@ -9,6 +9,7 @@ use App\Domain\Owner\ValueObjects\OwnerId;
 use App\Domain\Vehicle\IVehicleRepository;
 use App\Domain\Vehicle\ValueObjects\LicensePlate;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\Vehicle\ValueObjects\VehicleStyle;
 use App\Domain\Vehicle\ValueObjects\VehicleYear;
 use App\Domain\Vehicle\Vehicle;
 use Illuminate\Support\Str;
@@ -44,6 +45,7 @@ final class CreateVehicleHandler
             $command->brand,
             $command->model,
             new VehicleYear($command->year),
+            new VehicleStyle($command->style),
         );
 
         $this->vehicles->save($vehicle);

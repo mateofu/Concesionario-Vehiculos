@@ -11,8 +11,9 @@ class CreateWorkshopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'    => ['required', 'string', 'max:255'],
-            'address' => ['required', 'string', 'max:500'],
+            'name'        => ['required', 'string', 'max:255'],
+            'address'     => ['required', 'string', 'max:500'],
+            'cost_center' => ['required', 'string', 'regex:/^\d{3}$/'],
         ];
     }
 }

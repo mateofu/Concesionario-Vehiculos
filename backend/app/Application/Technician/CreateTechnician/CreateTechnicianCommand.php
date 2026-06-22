@@ -10,5 +10,6 @@ final readonly class CreateTechnicianCommand
         public string $name,
         public string $email,
         public string $phone,
+        public string $specialty,
     ) {}
 }

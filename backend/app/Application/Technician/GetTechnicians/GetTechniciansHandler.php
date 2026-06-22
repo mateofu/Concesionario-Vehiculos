@@ -16,11 +16,13 @@ final class GetTechniciansHandler
     public function handle(): array
     {
         return array_map(
-            fn ($technician) => new TechnicianDTO(
-                $technician->id()->value,
-                $technician->name()->value,
-                $technician->email()->value,
-                $technician->phone()->value,
+            fn ($t) => new TechnicianDTO(
+                id: $t->id()->value,
+                name: $t->name()->value,
+                email: $t->email()->value,
+                phone: $t->phone()->value,
+                specialty: $t->specialty()->value,
+                is_available: $t->isAvailable(),
             ),
             $this->technicians->findAll(),
         );

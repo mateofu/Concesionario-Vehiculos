@@ -14,14 +14,12 @@ final class CancelAppointmentHandler
         private readonly IAppointmentRepository $appointments,
     ) {}
 
-    public function handle(CancelAppointmentCommand $command): void
+    public function handle(string $appointmentId): void
     {
-        $id = new AppointmentId($command->appointmentId);
-
-        $appointment = $this->appointments->findById($id);
+        $appointment = $this->appointments->findById(new AppointmentId($appointmentId));
 
         if ($appointment === null) {
-            throw new RuntimeException("Appointment [{$command->appointmentId}] not found.");
+            throw new RuntimeException("Appointment [{$appointmentId}] not found.");
         }
 
         $appointment->cancel();

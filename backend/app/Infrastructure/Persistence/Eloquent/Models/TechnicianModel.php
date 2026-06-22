@@ -14,12 +14,9 @@ class TechnicianModel extends Model
 
     protected $table = 'technicians';
 
-    protected $fillable = [
-        'id',
-        'name',
-        'email',
-        'phone',
-    ];
+    protected $fillable = ['id', 'name', 'email', 'phone', 'specialty', 'is_available'];
+
+    protected $casts = ['is_available' => 'boolean'];
 
     public function workStations(): BelongsToMany
     {

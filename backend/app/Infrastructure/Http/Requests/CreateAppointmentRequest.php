@@ -11,11 +11,12 @@ class CreateAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'vehicle_id'      => ['required', 'uuid'],
-            'technician_id'   => ['required', 'uuid'],
-            'work_station_id' => ['required', 'uuid'],
-            'scheduled_at'    => ['required', 'date'],
-            'notes'           => ['nullable', 'string', 'max:1000'],
+            'vehicle_id'       => ['required', 'uuid'],
+            'technician_id'    => ['required', 'uuid'],
+            'work_station_id'  => ['required', 'uuid'],
+            'scheduled_at'     => ['required', 'date'],
+            'duration_minutes' => ['required', 'integer', 'min:1', 'max:480'],
+            'notes'            => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

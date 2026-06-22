@@ -15,18 +15,9 @@ class VehicleModel extends Model
 
     protected $table = 'vehicles';
 
-    protected $fillable = [
-        'id',
-        'owner_id',
-        'license_plate',
-        'brand',
-        'model',
-        'year',
-    ];
+    protected $fillable = ['id', 'owner_id', 'license_plate', 'brand', 'model', 'year', 'style'];
 
-    protected $casts = [
-        'year' => 'integer',
-    ];
+    protected $casts = ['year' => 'integer'];
 
     public function owner(): BelongsTo
     {

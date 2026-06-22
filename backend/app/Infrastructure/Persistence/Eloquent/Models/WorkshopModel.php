@@ -14,11 +14,7 @@ class WorkshopModel extends Model
 
     protected $table = 'workshops';
 
-    protected $fillable = [
-        'id',
-        'name',
-        'address',
-    ];
+    protected $fillable = ['id', 'name', 'address', 'cost_center'];
 
     public function locations(): HasMany
     {

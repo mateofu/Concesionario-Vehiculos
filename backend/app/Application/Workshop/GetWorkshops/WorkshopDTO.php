@@ -10,5 +10,6 @@ final readonly class WorkshopDTO
         public string $id,
         public string $name,
         public string $address,
+        public string $cost_center,
     ) {}
 }

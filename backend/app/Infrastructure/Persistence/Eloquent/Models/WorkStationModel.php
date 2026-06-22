@@ -16,11 +16,9 @@ class WorkStationModel extends Model
 
     protected $table = 'work_stations';
 
-    protected $fillable = [
-        'id',
-        'location_id',
-        'name',
-    ];
+    protected $fillable = ['id', 'location_id', 'name', 'station_number', 'technical_area'];
+
+    protected $casts = ['station_number' => 'integer'];
 
     public function location(): BelongsTo
     {

@@ -12,5 +12,6 @@ final readonly class CreateVehicleCommand
         public string $brand,
         public string $model,
         public int $year,
+        public string $style,
     ) {}
 }

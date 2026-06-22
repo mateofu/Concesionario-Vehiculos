@@ -8,7 +8,10 @@ final readonly class OwnerDTO
 {
     public function __construct(
         public string $id,
-        public string $name,
+        public string $first_name,
+        public string $last_name,
+        public string $document_type,
+        public string $document_number,
         public string $email,
         public string $phone,
     ) {}

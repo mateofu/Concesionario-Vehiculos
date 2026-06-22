@@ -30,6 +30,7 @@ final class CreateAppointmentHandler
         $vehicleId     = new VehicleId($command->vehicleId);
         $technicianId  = new TechnicianId($command->technicianId);
         $workStationId = new WorkStationId($command->workStationId);
+        $scheduledAt   = new \DateTimeImmutable($command->scheduledAt);
 
         if ($this->vehicles->findById($vehicleId) === null) {
             throw new RuntimeException("Vehicle [{$command->vehicleId}] not found.");
@@ -43,7 +44,12 @@ final class CreateAppointmentHandler
             throw new RuntimeException("WorkStation [{$command->workStationId}] not found.");
         }
 
-        $scheduledAt = new \DateTimeImmutable($command->scheduledAt);
+        if ($this->appointments->hasOverlap($workStationId, $scheduledAt, $command->durationMinutes)) {
+            throw new RuntimeException(
+                "WorkStation [{$command->workStationId}] already has an appointment in that time slot."
+            );
+        }
+
         $id = new AppointmentId((string) Str::uuid());
 
         $appointment = Appointment::create(
@@ -52,6 +58,7 @@ final class CreateAppointmentHandler
             $technicianId,
             $workStationId,
             $scheduledAt,
+            $command->durationMinutes,
             $command->notes,
         );
 

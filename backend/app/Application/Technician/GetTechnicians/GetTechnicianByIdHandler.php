@@ -23,10 +23,12 @@ final class GetTechnicianByIdHandler
         }
 
         return new TechnicianDTO(
-            $technician->id()->value,
-            $technician->name()->value,
-            $technician->email()->value,
-            $technician->phone()->value,
+            id: $technician->id()->value,
+            name: $technician->name()->value,
+            email: $technician->email()->value,
+            phone: $technician->phone()->value,
+            specialty: $technician->specialty()->value,
+            is_available: $technician->isAvailable(),
         );
     }
 }

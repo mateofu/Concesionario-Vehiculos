@@ -8,6 +8,7 @@ use App\Domain\Technician\ValueObjects\TechnicianEmail;
 use App\Domain\Technician\ValueObjects\TechnicianId;
 use App\Domain\Technician\ValueObjects\TechnicianName;
 use App\Domain\Technician\ValueObjects\TechnicianPhone;
+use App\Domain\Technician\ValueObjects\TechnicianSpecialty;
 
 final class Technician
 {
@@ -16,6 +17,8 @@ final class Technician
         private TechnicianName $name,
         private TechnicianEmail $email,
         private TechnicianPhone $phone,
+        private TechnicianSpecialty $specialty,
+        private bool $isAvailable,
     ) {}
 
     public static function create(
@@ -23,8 +26,10 @@ final class Technician
         TechnicianName $name,
         TechnicianEmail $email,
         TechnicianPhone $phone,
+        TechnicianSpecialty $specialty,
+        bool $isAvailable = true,
     ): self {
-        return new self($id, $name, $email, $phone);
+        return new self($id, $name, $email, $phone, $specialty, $isAvailable);
     }
 
     public function id(): TechnicianId
@@ -45,5 +50,25 @@ final class Technician
     public function phone(): TechnicianPhone
     {
         return $this->phone;
+    }
+
+    public function specialty(): TechnicianSpecialty
+    {
+        return $this->specialty;
+    }
+
+    public function isAvailable(): bool
+    {
+        return $this->isAvailable;
+    }
+
+    public function markUnavailable(): void
+    {
+        $this->isAvailable = false;
+    }
+
+    public function markAvailable(): void
+    {
+        $this->isAvailable = true;
     }
 }

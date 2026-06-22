@@ -28,6 +28,7 @@ final class GetAppointmentByIdHandler
             technician_id: $appointment->technicianId()->value,
             work_station_id: $appointment->workStationId()->value,
             scheduled_at: $appointment->scheduledAt()->format(\DateTimeInterface::ATOM),
+            duration_minutes: $appointment->durationMinutes(),
             status: $appointment->status()->value,
             notes: $appointment->notes(),
         );

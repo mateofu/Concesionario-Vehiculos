@@ -16,10 +16,11 @@ final class GetWorkshopsHandler
     public function handle(): array
     {
         return array_map(
-            fn ($workshop) => new WorkshopDTO(
-                $workshop->id()->value,
-                $workshop->name()->value,
-                $workshop->address(),
+            fn ($w) => new WorkshopDTO(
+                id: $w->id()->value,
+                name: $w->name()->value,
+                address: $w->address(),
+                cost_center: $w->costCenter()->value,
             ),
             $this->workshops->findAll(),
         );

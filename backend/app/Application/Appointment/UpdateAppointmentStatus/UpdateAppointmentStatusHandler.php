@@ -17,17 +17,13 @@ final class UpdateAppointmentStatusHandler
 
     public function handle(UpdateAppointmentStatusCommand $command): void
     {
-        $id = new AppointmentId($command->appointmentId);
-
-        $appointment = $this->appointments->findById($id);
+        $appointment = $this->appointments->findById(new AppointmentId($command->appointmentId));
 
         if ($appointment === null) {
             throw new RuntimeException("Appointment [{$command->appointmentId}] not found.");
         }
 
-        $newStatus = AppointmentStatus::from($command->status);
-
-        $appointment->updateStatus($newStatus);
+        $appointment->updateStatus(AppointmentStatus::from($command->status));
 
         $this->appointments->save($appointment);
     }

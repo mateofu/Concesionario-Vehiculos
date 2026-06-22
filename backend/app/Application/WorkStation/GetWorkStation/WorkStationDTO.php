@@ -10,5 +10,7 @@ final readonly class WorkStationDTO
         public string $id,
         public string $location_id,
         public string $name,
+        public int $station_number,
+        public string $technical_area,
     ) {}
 }

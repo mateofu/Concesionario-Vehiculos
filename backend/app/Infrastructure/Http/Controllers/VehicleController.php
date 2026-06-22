@@ -10,34 +10,25 @@ use App\Application\Vehicle\GetVehicle\GetVehicleByIdHandler;
 use App\Infrastructure\Http\Requests\CreateVehicleRequest;
 use App\Infrastructure\Http\Resources\VehicleResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 
-class VehicleController extends Controller
+class VehicleController
 {
-    public function __construct(
-        private readonly CreateVehicleHandler $createVehicle,
-        private readonly GetVehicleByIdHandler $getVehicleById,
-    ) {}
-
-    public function show(string $id): VehicleResource
+    public function show(string $id, GetVehicleByIdHandler $handler): VehicleResource
     {
-        $dto = $this->getVehicleById->handle($id);
-
-        return new VehicleResource((array) $dto);
+        return new VehicleResource((array) $handler->handle($id));
     }
 
-    public function store(CreateVehicleRequest $request): JsonResponse
+    public function store(CreateVehicleRequest $request, CreateVehicleHandler $handler): JsonResponse
     {
-        $id = $this->createVehicle->handle(
-            new CreateVehicleCommand(
-                $request->validated('owner_id'),
-                $request->validated('license_plate'),
-                $request->validated('brand'),
-                $request->validated('model'),
-                (int) $request->validated('year'),
-            ),
-        );
+        $id = $handler->handle(new CreateVehicleCommand(
+            ownerId:      $request->validated('owner_id'),
+            licensePlate: $request->validated('license_plate'),
+            brand:        $request->validated('brand'),
+            model:        $request->validated('model'),
+            year:         $request->validated('year'),
+            style:        $request->validated('style'),
+        ));
 
-        return response()->json(['id' => $id], 201);
+        return new JsonResponse(['id' => $id], 201);
     }
 }

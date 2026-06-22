@@ -7,6 +7,7 @@ namespace App\Application\WorkStation\CreateWorkStation;
 use App\Domain\Location\ILocationRepository;
 use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\WorkStation\IWorkStationRepository;
+use App\Domain\WorkStation\ValueObjects\TechnicalArea;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use App\Domain\WorkStation\ValueObjects\WorkStationName;
 use App\Domain\WorkStation\WorkStation;
@@ -34,6 +35,8 @@ final class CreateWorkStationHandler
             $id,
             new WorkStationName($command->name),
             $locationId,
+            $command->stationNumber,
+            new TechnicalArea($command->technicalArea),
         );
 
         $this->workStations->save($workStation);
