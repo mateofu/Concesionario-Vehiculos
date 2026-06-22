@@ -8,6 +8,7 @@ use App\Application\Appointment\CancelAppointment\CancelAppointmentCommand;
 use App\Application\Appointment\CancelAppointment\CancelAppointmentHandler;
 use App\Application\Appointment\CreateAppointment\CreateAppointmentCommand;
 use App\Application\Appointment\CreateAppointment\CreateAppointmentHandler;
+use App\Application\Appointment\GetAppointments\GetAppointmentByIdHandler;
 use App\Application\Appointment\GetAppointments\GetAppointmentsHandler;
 use App\Application\Appointment\UpdateAppointmentStatus\UpdateAppointmentStatusCommand;
 use App\Application\Appointment\UpdateAppointmentStatus\UpdateAppointmentStatusHandler;
@@ -23,6 +24,7 @@ class AppointmentController extends Controller
 {
     public function __construct(
         private readonly GetAppointmentsHandler $getAppointments,
+        private readonly GetAppointmentByIdHandler $getAppointmentById,
         private readonly CreateAppointmentHandler $createAppointment,
         private readonly UpdateAppointmentStatusHandler $updateStatus,
         private readonly CancelAppointmentHandler $cancelAppointment,
@@ -40,6 +42,13 @@ class AppointmentController extends Controller
         return AppointmentResource::collection(
             array_map(fn ($dto) => (array) $dto, $appointments),
         );
+    }
+
+    public function show(string $id): AppointmentResource
+    {
+        $dto = $this->getAppointmentById->handle($id);
+
+        return new AppointmentResource((array) $dto);
     }
 
     public function store(CreateAppointmentRequest $request): JsonResponse

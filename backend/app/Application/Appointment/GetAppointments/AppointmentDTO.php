@@ -8,10 +8,10 @@ final readonly class AppointmentDTO
 {
     public function __construct(
         public string $id,
-        public string $vehicleId,
-        public string $technicianId,
-        public string $workStationId,
-        public string $scheduledAt,
+        public string $vehicle_id,
+        public string $technician_id,
+        public string $work_station_id,
+        public string $scheduled_at,
         public string $status,
         public ?string $notes,
     ) {}

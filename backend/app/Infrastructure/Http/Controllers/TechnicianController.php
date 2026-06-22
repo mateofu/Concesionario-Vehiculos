@@ -6,6 +6,7 @@ namespace App\Infrastructure\Http\Controllers;
 
 use App\Application\Technician\CreateTechnician\CreateTechnicianCommand;
 use App\Application\Technician\CreateTechnician\CreateTechnicianHandler;
+use App\Application\Technician\GetTechnicians\GetTechnicianByIdHandler;
 use App\Application\Technician\GetTechnicians\GetTechniciansHandler;
 use App\Infrastructure\Http\Requests\CreateTechnicianRequest;
 use App\Infrastructure\Http\Resources\TechnicianResource;
@@ -17,6 +18,7 @@ class TechnicianController extends Controller
 {
     public function __construct(
         private readonly GetTechniciansHandler $getTechnicians,
+        private readonly GetTechnicianByIdHandler $getTechnicianById,
         private readonly CreateTechnicianHandler $createTechnician,
     ) {}
 
@@ -27,6 +29,13 @@ class TechnicianController extends Controller
         return TechnicianResource::collection(
             array_map(fn ($dto) => (array) $dto, $technicians),
         );
+    }
+
+    public function show(string $id): TechnicianResource
+    {
+        $dto = $this->getTechnicianById->handle($id);
+
+        return new TechnicianResource((array) $dto);
     }
 
     public function store(CreateTechnicianRequest $request): JsonResponse

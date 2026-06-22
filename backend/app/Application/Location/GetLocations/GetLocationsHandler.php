@@ -22,10 +22,10 @@ final class GetLocationsHandler
 
         return array_map(
             fn ($location) => new LocationDTO(
-                $location->id()->value,
-                $location->workshopId()->value,
-                $location->name()->value,
-                $location->address(),
+                id: $location->id()->value,
+                workshop_id: $location->workshopId()->value,
+                name: $location->name()->value,
+                address: $location->address(),
             ),
             $locations,
         );
