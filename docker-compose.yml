@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: ../docker/php/Dockerfile
+    container_name: concesionario_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    networks:
+      - concesionario_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: concesionario_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - concesionario_network
+    depends_on:
+      - app
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: concesionario_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-concesionario_db}
+      POSTGRES_USER: ${DB_USERNAME:-concesionario_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-concesionario_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - concesionario_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-concesionario_user} -d ${DB_DATABASE:-concesionario_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  concesionario_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
