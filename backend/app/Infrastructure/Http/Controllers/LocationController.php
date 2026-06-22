@@ -12,10 +12,8 @@ use App\Infrastructure\Http\Requests\CreateLocationRequest;
 use App\Infrastructure\Http\Resources\LocationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
 
-class LocationController extends Controller
+class LocationController
 {
     public function __construct(
         private readonly GetLocationsHandler $getLocations,
@@ -23,22 +21,23 @@ class LocationController extends Controller
         private readonly CreateLocationHandler $createLocation,
     ) {}
 
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        $locations = $this->getLocations->handle(
-            $request->query('workshop_id'),
+        $result = $this->getLocations->handle(
+            workshopId: $request->query('workshop_id'),
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
         );
 
-        return LocationResource::collection(
-            array_map(fn ($dto) => (array) $dto, $locations),
-        );
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id): LocationResource
     {
-        $dto = $this->getLocationById->handle($id);
-
-        return new LocationResource((array) $dto);
+        return new LocationResource((array) $this->getLocationById->handle($id));
     }
 
     public function store(CreateLocationRequest $request): JsonResponse

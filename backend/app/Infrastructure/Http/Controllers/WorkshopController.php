@@ -11,15 +11,21 @@ use App\Application\Workshop\GetWorkshops\GetWorkshopsHandler;
 use App\Infrastructure\Http\Requests\CreateWorkshopRequest;
 use App\Infrastructure\Http\Resources\WorkshopResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Request;
 
 class WorkshopController
 {
-    public function index(GetWorkshopsHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetWorkshopsHandler $handler): JsonResponse
     {
-        $workshops = array_map(fn ($dto) => (array) $dto, $handler->handle());
+        $result = $handler->handle(
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
+        );
 
-        return WorkshopResource::collection($workshops);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetWorkshopByIdHandler $handler): WorkshopResource

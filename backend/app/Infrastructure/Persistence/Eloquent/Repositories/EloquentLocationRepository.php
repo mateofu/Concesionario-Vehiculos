@@ -41,4 +41,30 @@ final class EloquentLocationRepository implements ILocationRepository
             ->map(fn ($m) => LocationMapper::toDomain($m))
             ->all();
     }
+
+    public function findPaginated(int $page, int $perPage, ?WorkshopId $workshopId = null): array
+    {
+        $query = LocationModel::query();
+
+        if ($workshopId !== null) {
+            $query->where('workshop_id', $workshopId->value);
+        }
+
+        return $query->skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => LocationMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(?WorkshopId $workshopId = null): int
+    {
+        $query = LocationModel::query();
+
+        if ($workshopId !== null) {
+            $query->where('workshop_id', $workshopId->value);
+        }
+
+        return $query->count();
+    }
 }

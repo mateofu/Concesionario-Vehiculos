@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Owner\GetOwner;
 
+use App\Application\Shared\PaginatedResult;
 use App\Domain\Owner\IOwnerRepository;
 
 final class GetOwnersHandler
@@ -12,10 +13,9 @@ final class GetOwnersHandler
         private readonly IOwnerRepository $owners,
     ) {}
 
-    /** @return OwnerDTO[] */
-    public function handle(): array
+    public function handle(int $page = 1, int $perPage = 15): PaginatedResult
     {
-        return array_map(
+        $items = array_map(
             fn ($o) => new OwnerDTO(
                 id: $o->id()->value,
                 first_name: $o->firstName()->value,
@@ -25,7 +25,14 @@ final class GetOwnersHandler
                 email: $o->email()->value,
                 phone: $o->phone()->value,
             ),
-            $this->owners->findAll(),
+            $this->owners->findPaginated($page, $perPage),
+        );
+
+        return new PaginatedResult(
+            items: $items,
+            total: $this->owners->countAll(),
+            page: $page,
+            perPage: $perPage,
         );
     }
 }

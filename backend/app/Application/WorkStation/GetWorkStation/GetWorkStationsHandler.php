@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\WorkStation\GetWorkStation;
 
+use App\Application\Shared\PaginatedResult;
 use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\WorkStation\IWorkStationRepository;
 
@@ -13,22 +14,31 @@ final class GetWorkStationsHandler
         private readonly IWorkStationRepository $workStations,
     ) {}
 
-    /** @return WorkStationDTO[] */
-    public function handle(?string $locationId = null): array
+    public function handle(?string $locationId = null, int $page = 1, int $perPage = 15): PaginatedResult
     {
-        $workStations = $locationId !== null
-            ? $this->workStations->findByLocation(new LocationId((int) $locationId))
-            : $this->workStations->findAll();
+        if ($locationId !== null) {
+            $all   = $this->workStations->findByLocation(new LocationId((int) $locationId));
+            $total = count($all);
+            $ws    = array_slice($all, ($page - 1) * $perPage, $perPage);
+        } else {
+            $ws    = $this->workStations->findPaginated($page, $perPage);
+            $total = $this->workStations->countAll();
+        }
 
-        return array_map(
-            fn ($ws) => new WorkStationDTO(
-                id: $ws->id()->value,
-                location_id: $ws->locationId()->value,
-                name: $ws->name()->value,
-                station_number: $ws->stationNumber(),
-                technical_area: $ws->technicalArea()->value,
+        return new PaginatedResult(
+            items: array_map(
+                fn ($w) => new WorkStationDTO(
+                    id: $w->id()->value,
+                    location_id: $w->locationId()->value,
+                    name: $w->name()->value,
+                    station_number: $w->stationNumber(),
+                    technical_area: $w->technicalArea()->value,
+                ),
+                $ws,
             ),
-            $workStations,
+            total: $total,
+            page: $page,
+            perPage: $perPage,
         );
     }
 }

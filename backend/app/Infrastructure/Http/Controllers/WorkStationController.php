@@ -15,18 +15,21 @@ use App\Infrastructure\Http\Requests\CreateWorkStationRequest;
 use App\Infrastructure\Http\Resources\WorkStationResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class WorkStationController
 {
-    public function index(Request $request, GetWorkStationsHandler $handler): AnonymousResourceCollection
+    public function index(Request $request, GetWorkStationsHandler $handler): JsonResponse
     {
-        $workStations = array_map(
-            fn ($dto) => (array) $dto,
-            $handler->handle($request->query('location_id')),
+        $result = $handler->handle(
+            locationId: $request->query('location_id'),
+            page: (int) $request->query('page', 1),
+            perPage: (int) $request->query('per_page', 15),
         );
 
-        return WorkStationResource::collection($workStations);
+        return new JsonResponse([
+            'data' => $result->items,
+            'meta' => $result->meta(),
+        ]);
     }
 
     public function show(string $id, GetWorkStationByIdHandler $handler): WorkStationResource

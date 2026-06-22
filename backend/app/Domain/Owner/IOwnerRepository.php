@@ -21,4 +21,8 @@ interface IOwnerRepository
 
     /** @return Owner[] */
     public function findAll(): array;
+
+    public function findPaginated(int $page, int $perPage): array;
+
+    public function countAll(): int;
 }

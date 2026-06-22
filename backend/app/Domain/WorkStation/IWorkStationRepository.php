@@ -21,4 +21,8 @@ interface IWorkStationRepository
     public function findAll(): array;
 
     public function assignTechnician(WorkStationId $workStationId, TechnicianId $technicianId): void;
+
+    public function findPaginated(int $page, int $perPage): array;
+
+    public function countAll(): int;
 }

@@ -49,4 +49,18 @@ final class EloquentVehicleRepository implements IVehicleRepository
             ->map(fn ($m) => VehicleMapper::toDomain($m))
             ->all();
     }
+
+    public function findPaginated(int $page, int $perPage): array
+    {
+        return VehicleModel::skip(($page - 1) * $perPage)
+            ->take($perPage)
+            ->get()
+            ->map(fn ($m) => VehicleMapper::toDomain($m))
+            ->all();
+    }
+
+    public function countAll(): int
+    {
+        return VehicleModel::count();
+    }
 }
