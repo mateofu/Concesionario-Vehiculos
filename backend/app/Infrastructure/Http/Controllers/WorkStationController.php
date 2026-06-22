@@ -13,44 +13,36 @@ use App\Infrastructure\Http\Requests\AssignTechnicianRequest;
 use App\Infrastructure\Http\Requests\CreateWorkStationRequest;
 use App\Infrastructure\Http\Resources\WorkStationResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 
-class WorkStationController extends Controller
+class WorkStationController
 {
-    public function __construct(
-        private readonly CreateWorkStationHandler $createWorkStation,
-        private readonly GetWorkStationByIdHandler $getWorkStationById,
-        private readonly AssignTechnicianHandler $assignTechnician,
-    ) {}
-
-    public function show(string $id): WorkStationResource
+    public function show(string $id, GetWorkStationByIdHandler $handler): WorkStationResource
     {
-        $dto = $this->getWorkStationById->handle($id);
-
-        return new WorkStationResource((array) $dto);
+        return new WorkStationResource((array) $handler->handle($id));
     }
 
-    public function store(CreateWorkStationRequest $request): JsonResponse
+    public function store(CreateWorkStationRequest $request, CreateWorkStationHandler $handler): JsonResponse
     {
-        $id = $this->createWorkStation->handle(
-            new CreateWorkStationCommand(
-                $request->validated('location_id'),
-                $request->validated('name'),
-            ),
-        );
+        $id = $handler->handle(new CreateWorkStationCommand(
+            locationId:    $request->validated('location_id'),
+            name:          $request->validated('name'),
+            stationNumber: $request->validated('station_number'),
+            technicalArea: $request->validated('technical_area'),
+        ));
 
-        return response()->json(['id' => $id], 201);
+        return new JsonResponse(['id' => $id], 201);
     }
 
-    public function assignTechnician(AssignTechnicianRequest $request, string $workStationId): JsonResponse
-    {
-        $this->assignTechnician->handle(
-            new AssignTechnicianCommand(
-                $workStationId,
-                $request->validated('technician_id'),
-            ),
-        );
+    public function assignTechnician(
+        string $id,
+        AssignTechnicianRequest $request,
+        AssignTechnicianHandler $handler,
+    ): JsonResponse {
+        $handler->handle(new AssignTechnicianCommand(
+            workStationId: $id,
+            technicianId:  $request->validated('technician_id'),
+        ));
 
-        return response()->json(null, 204);
+        return new JsonResponse(null, 204);
     }
 }

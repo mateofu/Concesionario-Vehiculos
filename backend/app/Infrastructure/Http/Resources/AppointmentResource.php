@@ -12,13 +12,14 @@ class AppointmentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'              => $this['id'],
-            'vehicle_id'      => $this['vehicle_id'],
-            'technician_id'   => $this['technician_id'],
-            'work_station_id' => $this['work_station_id'],
-            'scheduled_at'    => $this['scheduled_at'],
-            'status'          => $this['status'],
-            'notes'           => $this['notes'],
+            'id'               => $this['id'],
+            'vehicle_id'       => $this['vehicle_id'],
+            'technician_id'    => $this['technician_id'],
+            'work_station_id'  => $this['work_station_id'],
+            'scheduled_at'     => $this['scheduled_at'],
+            'duration_minutes' => $this['duration_minutes'],
+            'status'           => $this['status'],
+            'notes'            => $this['notes'],
         ];
     }
 }

@@ -29,6 +29,7 @@ final class GetVehicleByIdHandler
             brand: $vehicle->brand(),
             model: $vehicle->model(),
             year: $vehicle->year()->value,
+            style: $vehicle->style()->value,
         );
     }
 }

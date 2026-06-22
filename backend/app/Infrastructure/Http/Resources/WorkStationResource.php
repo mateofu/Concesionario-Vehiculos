@@ -12,9 +12,11 @@ class WorkStationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this['id'],
-            'location_id' => $this['location_id'],
-            'name'        => $this['name'],
+            'id'             => $this['id'],
+            'location_id'    => $this['location_id'],
+            'name'           => $this['name'],
+            'station_number' => $this['station_number'],
+            'technical_area' => $this['technical_area'],
         ];
     }
 }

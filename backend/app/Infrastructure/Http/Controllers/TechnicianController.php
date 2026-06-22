@@ -12,42 +12,30 @@ use App\Infrastructure\Http\Requests\CreateTechnicianRequest;
 use App\Infrastructure\Http\Resources\TechnicianResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
 
-class TechnicianController extends Controller
+class TechnicianController
 {
-    public function __construct(
-        private readonly GetTechniciansHandler $getTechnicians,
-        private readonly GetTechnicianByIdHandler $getTechnicianById,
-        private readonly CreateTechnicianHandler $createTechnician,
-    ) {}
-
-    public function index(): AnonymousResourceCollection
+    public function index(GetTechniciansHandler $handler): AnonymousResourceCollection
     {
-        $technicians = $this->getTechnicians->handle();
+        $technicians = array_map(fn ($dto) => (array) $dto, $handler->handle());
 
-        return TechnicianResource::collection(
-            array_map(fn ($dto) => (array) $dto, $technicians),
-        );
+        return TechnicianResource::collection($technicians);
     }
 
-    public function show(string $id): TechnicianResource
+    public function show(string $id, GetTechnicianByIdHandler $handler): TechnicianResource
     {
-        $dto = $this->getTechnicianById->handle($id);
-
-        return new TechnicianResource((array) $dto);
+        return new TechnicianResource((array) $handler->handle($id));
     }
 
-    public function store(CreateTechnicianRequest $request): JsonResponse
+    public function store(CreateTechnicianRequest $request, CreateTechnicianHandler $handler): JsonResponse
     {
-        $id = $this->createTechnician->handle(
-            new CreateTechnicianCommand(
-                $request->validated('name'),
-                $request->validated('email'),
-                $request->validated('phone'),
-            ),
-        );
+        $id = $handler->handle(new CreateTechnicianCommand(
+            name:      $request->validated('name'),
+            email:     $request->validated('email'),
+            phone:     $request->validated('phone'),
+            specialty: $request->validated('specialty'),
+        ));
 
-        return response()->json(['id' => $id], 201);
+        return new JsonResponse(['id' => $id], 201);
     }
 }

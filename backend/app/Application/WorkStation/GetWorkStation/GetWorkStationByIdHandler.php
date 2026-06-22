@@ -26,6 +26,8 @@ final class GetWorkStationByIdHandler
             id: $workStation->id()->value,
             location_id: $workStation->locationId()->value,
             name: $workStation->name()->value,
+            station_number: $workStation->stationNumber(),
+            technical_area: $workStation->technicalArea()->value,
         );
     }
 }

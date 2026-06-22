@@ -23,9 +23,10 @@ final class GetWorkshopByIdHandler
         }
 
         return new WorkshopDTO(
-            $workshop->id()->value,
-            $workshop->name()->value,
-            $workshop->address(),
+            id: $workshop->id()->value,
+            name: $workshop->name()->value,
+            address: $workshop->address(),
+            cost_center: $workshop->costCenter()->value,
         );
     }
 }

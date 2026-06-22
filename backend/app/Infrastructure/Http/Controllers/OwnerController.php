@@ -10,32 +10,25 @@ use App\Application\Owner\GetOwner\GetOwnerByIdHandler;
 use App\Infrastructure\Http\Requests\CreateOwnerRequest;
 use App\Infrastructure\Http\Resources\OwnerResource;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
 
-class OwnerController extends Controller
+class OwnerController
 {
-    public function __construct(
-        private readonly CreateOwnerHandler $createOwner,
-        private readonly GetOwnerByIdHandler $getOwnerById,
-    ) {}
-
-    public function show(string $id): OwnerResource
+    public function show(string $id, GetOwnerByIdHandler $handler): OwnerResource
     {
-        $dto = $this->getOwnerById->handle($id);
-
-        return new OwnerResource((array) $dto);
+        return new OwnerResource((array) $handler->handle($id));
     }
 
-    public function store(CreateOwnerRequest $request): JsonResponse
+    public function store(CreateOwnerRequest $request, CreateOwnerHandler $handler): JsonResponse
     {
-        $id = $this->createOwner->handle(
-            new CreateOwnerCommand(
-                $request->validated('name'),
-                $request->validated('email'),
-                $request->validated('phone'),
-            ),
-        );
+        $id = $handler->handle(new CreateOwnerCommand(
+            firstName:      $request->validated('first_name'),
+            lastName:       $request->validated('last_name'),
+            documentType:   $request->validated('document_type'),
+            documentNumber: $request->validated('document_number'),
+            email:          $request->validated('email'),
+            phone:          $request->validated('phone'),
+        ));
 
-        return response()->json(['id' => $id], 201);
+        return new JsonResponse(['id' => $id], 201);
     }
 }

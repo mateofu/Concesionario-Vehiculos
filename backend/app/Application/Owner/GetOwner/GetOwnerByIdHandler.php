@@ -23,10 +23,13 @@ final class GetOwnerByIdHandler
         }
 
         return new OwnerDTO(
-            $owner->id()->value,
-            $owner->name()->value,
-            $owner->email()->value,
-            $owner->phone()->value,
+            id: $owner->id()->value,
+            first_name: $owner->firstName()->value,
+            last_name: $owner->lastName()->value,
+            document_type: $owner->documentType()->value,
+            document_number: $owner->documentNumber()->value,
+            email: $owner->email()->value,
+            phone: $owner->phone()->value,
         );
     }
 }

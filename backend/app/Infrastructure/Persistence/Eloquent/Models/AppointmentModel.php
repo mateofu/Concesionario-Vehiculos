@@ -20,12 +20,14 @@ class AppointmentModel extends Model
         'technician_id',
         'work_station_id',
         'scheduled_at',
+        'duration_minutes',
         'status',
         'notes',
     ];
 
     protected $casts = [
-        'scheduled_at' => 'datetime',
+        'scheduled_at'     => 'datetime',
+        'duration_minutes' => 'integer',
     ];
 
     public function vehicle(): BelongsTo

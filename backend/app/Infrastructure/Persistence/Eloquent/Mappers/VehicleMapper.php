@@ -7,6 +7,7 @@ namespace App\Infrastructure\Persistence\Eloquent\Mappers;
 use App\Domain\Owner\ValueObjects\OwnerId;
 use App\Domain\Vehicle\ValueObjects\LicensePlate;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\Vehicle\ValueObjects\VehicleStyle;
 use App\Domain\Vehicle\ValueObjects\VehicleYear;
 use App\Domain\Vehicle\Vehicle;
 use App\Infrastructure\Persistence\Eloquent\Models\VehicleModel;
@@ -22,6 +23,7 @@ final class VehicleMapper
             $model->brand,
             $model->model,
             new VehicleYear($model->year),
+            new VehicleStyle($model->style),
         );
     }
 
@@ -34,6 +36,7 @@ final class VehicleMapper
             'brand'         => $vehicle->brand(),
             'model'         => $vehicle->model(),
             'year'          => $vehicle->year()->value,
+            'style'         => $vehicle->style()->value,
         ];
     }
 }

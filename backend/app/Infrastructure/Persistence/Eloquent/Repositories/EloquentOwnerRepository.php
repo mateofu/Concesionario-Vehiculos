@@ -6,6 +6,8 @@ namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 
 use App\Domain\Owner\IOwnerRepository;
 use App\Domain\Owner\Owner;
+use App\Domain\Owner\ValueObjects\DocumentNumber;
+use App\Domain\Owner\ValueObjects\DocumentType;
 use App\Domain\Owner\ValueObjects\OwnerEmail;
 use App\Domain\Owner\ValueObjects\OwnerId;
 use App\Infrastructure\Persistence\Eloquent\Mappers\OwnerMapper;
@@ -31,6 +33,15 @@ final class EloquentOwnerRepository implements IOwnerRepository
     public function findByEmail(OwnerEmail $email): ?Owner
     {
         $model = OwnerModel::where('email', $email->value)->first();
+
+        return $model ? OwnerMapper::toDomain($model) : null;
+    }
+
+    public function findByDocument(DocumentType $type, DocumentNumber $number): ?Owner
+    {
+        $model = OwnerModel::where('document_type', $type->value)
+            ->where('document_number', $number->value)
+            ->first();
 
         return $model ? OwnerMapper::toDomain($model) : null;
     }

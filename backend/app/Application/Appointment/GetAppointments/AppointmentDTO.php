@@ -12,6 +12,7 @@ final readonly class AppointmentDTO
         public string $technician_id,
         public string $work_station_id,
         public string $scheduled_at,
+        public int $duration_minutes,
         public string $status,
         public ?string $notes,
     ) {}

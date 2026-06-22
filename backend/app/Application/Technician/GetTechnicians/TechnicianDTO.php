@@ -11,5 +11,7 @@ final readonly class TechnicianDTO
         public string $name,
         public string $email,
         public string $phone,
+        public string $specialty,
+        public bool $is_available,
     ) {}
 }

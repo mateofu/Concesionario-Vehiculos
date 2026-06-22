@@ -7,6 +7,7 @@ namespace App\Domain\Vehicle;
 use App\Domain\Owner\ValueObjects\OwnerId;
 use App\Domain\Vehicle\ValueObjects\LicensePlate;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\Vehicle\ValueObjects\VehicleStyle;
 use App\Domain\Vehicle\ValueObjects\VehicleYear;
 
 final class Vehicle
@@ -18,6 +19,7 @@ final class Vehicle
         private string $brand,
         private string $model,
         private VehicleYear $year,
+        private VehicleStyle $style,
     ) {}
 
     public static function create(
@@ -27,8 +29,9 @@ final class Vehicle
         string $brand,
         string $model,
         VehicleYear $year,
+        VehicleStyle $style,
     ): self {
-        return new self($id, $ownerId, $licensePlate, $brand, $model, $year);
+        return new self($id, $ownerId, $licensePlate, $brand, $model, $year, $style);
     }
 
     public function id(): VehicleId
@@ -59,5 +62,10 @@ final class Vehicle
     public function year(): VehicleYear
     {
         return $this->year;
+    }
+
+    public function style(): VehicleStyle
+    {
+        return $this->style;
     }
 }

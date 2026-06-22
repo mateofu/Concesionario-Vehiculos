@@ -12,41 +12,29 @@ use App\Infrastructure\Http\Requests\CreateWorkshopRequest;
 use App\Infrastructure\Http\Resources\WorkshopResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
 
-class WorkshopController extends Controller
+class WorkshopController
 {
-    public function __construct(
-        private readonly GetWorkshopsHandler $getWorkshops,
-        private readonly GetWorkshopByIdHandler $getWorkshopById,
-        private readonly CreateWorkshopHandler $createWorkshop,
-    ) {}
-
-    public function index(): AnonymousResourceCollection
+    public function index(GetWorkshopsHandler $handler): AnonymousResourceCollection
     {
-        $workshops = $this->getWorkshops->handle();
+        $workshops = array_map(fn ($dto) => (array) $dto, $handler->handle());
 
-        return WorkshopResource::collection(
-            array_map(fn ($dto) => (array) $dto, $workshops),
-        );
+        return WorkshopResource::collection($workshops);
     }
 
-    public function show(string $id): WorkshopResource
+    public function show(string $id, GetWorkshopByIdHandler $handler): WorkshopResource
     {
-        $dto = $this->getWorkshopById->handle($id);
-
-        return new WorkshopResource((array) $dto);
+        return new WorkshopResource((array) $handler->handle($id));
     }
 
-    public function store(CreateWorkshopRequest $request): JsonResponse
+    public function store(CreateWorkshopRequest $request, CreateWorkshopHandler $handler): JsonResponse
     {
-        $id = $this->createWorkshop->handle(
-            new CreateWorkshopCommand(
-                $request->validated('name'),
-                $request->validated('address'),
-            ),
-        );
+        $id = $handler->handle(new CreateWorkshopCommand(
+            name: $request->validated('name'),
+            address: $request->validated('address'),
+            costCenter: $request->validated('cost_center'),
+        ));
 
-        return response()->json(['id' => $id], 201);
+        return new JsonResponse(['id' => $id], 201);
     }
 }

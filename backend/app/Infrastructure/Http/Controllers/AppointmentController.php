@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Http\Controllers;
 
-use App\Application\Appointment\CancelAppointment\CancelAppointmentCommand;
 use App\Application\Appointment\CancelAppointment\CancelAppointmentHandler;
 use App\Application\Appointment\CreateAppointment\CreateAppointmentCommand;
 use App\Application\Appointment\CreateAppointment\CreateAppointmentHandler;
@@ -18,69 +17,60 @@ use App\Infrastructure\Http\Resources\AppointmentResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
 
-class AppointmentController extends Controller
+class AppointmentController
 {
-    public function __construct(
-        private readonly GetAppointmentsHandler $getAppointments,
-        private readonly GetAppointmentByIdHandler $getAppointmentById,
-        private readonly CreateAppointmentHandler $createAppointment,
-        private readonly UpdateAppointmentStatusHandler $updateStatus,
-        private readonly CancelAppointmentHandler $cancelAppointment,
-    ) {}
-
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request, GetAppointmentsHandler $handler): AnonymousResourceCollection
     {
-        $appointments = $this->getAppointments->handle(
-            status: $request->query('status'),
-            technicianId: $request->query('technician_id'),
-            vehicleId: $request->query('vehicle_id'),
-            date: $request->query('date'),
-        );
-
-        return AppointmentResource::collection(
-            array_map(fn ($dto) => (array) $dto, $appointments),
-        );
-    }
-
-    public function show(string $id): AppointmentResource
-    {
-        $dto = $this->getAppointmentById->handle($id);
-
-        return new AppointmentResource((array) $dto);
-    }
-
-    public function store(CreateAppointmentRequest $request): JsonResponse
-    {
-        $id = $this->createAppointment->handle(
-            new CreateAppointmentCommand(
-                $request->validated('vehicle_id'),
-                $request->validated('technician_id'),
-                $request->validated('work_station_id'),
-                $request->validated('scheduled_at'),
-                $request->validated('notes'),
+        $appointments = array_map(
+            fn ($dto) => (array) $dto,
+            $handler->handle(
+                status:      $request->query('status'),
+                technicianId: $request->query('technician_id'),
+                vehicleId:   $request->query('vehicle_id'),
+                date:        $request->query('date'),
             ),
         );
 
-        return response()->json(['id' => $id], 201);
+        return AppointmentResource::collection($appointments);
     }
 
-    public function updateStatus(UpdateAppointmentStatusRequest $request, string $id): JsonResponse
+    public function show(string $id, GetAppointmentByIdHandler $handler): AppointmentResource
     {
-        $this->updateStatus->handle(
-            new UpdateAppointmentStatusCommand($id, $request->validated('status')),
-        );
-
-        return response()->json(null, 204);
+        return new AppointmentResource((array) $handler->handle($id));
     }
 
-    public function cancel(string $id): JsonResponse
+    public function store(CreateAppointmentRequest $request, CreateAppointmentHandler $handler): JsonResponse
     {
-        $this->cancelAppointment->handle(
-            new CancelAppointmentCommand($id),
-        );
+        $id = $handler->handle(new CreateAppointmentCommand(
+            vehicleId:       $request->validated('vehicle_id'),
+            technicianId:    $request->validated('technician_id'),
+            workStationId:   $request->validated('work_station_id'),
+            scheduledAt:     $request->validated('scheduled_at'),
+            durationMinutes: $request->validated('duration_minutes'),
+            notes:           $request->validated('notes'),
+        ));
 
-        return response()->json(null, 204);
+        return new JsonResponse(['id' => $id], 201);
+    }
+
+    public function updateStatus(
+        string $id,
+        UpdateAppointmentStatusRequest $request,
+        UpdateAppointmentStatusHandler $handler,
+    ): JsonResponse {
+        $handler->handle(new UpdateAppointmentStatusCommand(
+            appointmentId: $id,
+            status:        $request->validated('status'),
+        ));
+
+        return new JsonResponse(null, 204);
+    }
+
+    public function cancel(string $id, CancelAppointmentHandler $handler): JsonResponse
+    {
+        $handler->handle($id);
+
+        return new JsonResponse(null, 204);
     }
 }

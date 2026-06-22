@@ -18,6 +18,7 @@ class VehicleResource extends JsonResource
             'brand'         => $this['brand'],
             'model'         => $this['model'],
             'year'          => $this['year'],
+            'style'         => $this['style'],
         ];
     }
 }

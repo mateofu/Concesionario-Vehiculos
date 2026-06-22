@@ -16,7 +16,10 @@ class OwnerModel extends Model
 
     protected $fillable = [
         'id',
-        'name',
+        'first_name',
+        'last_name',
+        'document_type',
+        'document_number',
         'email',
         'phone',
     ];

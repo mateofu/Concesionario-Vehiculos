@@ -10,6 +10,7 @@ use App\Domain\Appointment\ValueObjects\AppointmentId;
 use App\Domain\Appointment\ValueObjects\AppointmentStatus;
 use App\Domain\Technician\ValueObjects\TechnicianId;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use App\Infrastructure\Persistence\Eloquent\Mappers\AppointmentMapper;
 use App\Infrastructure\Persistence\Eloquent\Models\AppointmentModel;
 
@@ -58,5 +59,29 @@ final class EloquentAppointmentRepository implements IAppointmentRepository
             ->get()
             ->map(fn ($m) => AppointmentMapper::toDomain($m))
             ->all();
+    }
+
+    public function hasOverlap(
+        WorkStationId $workStationId,
+        \DateTimeImmutable $start,
+        int $durationMinutes,
+        ?AppointmentId $excludeId = null,
+    ): bool {
+        $end = $start->modify("+{$durationMinutes} minutes");
+
+        $query = AppointmentModel::query()
+            ->where('work_station_id', $workStationId->value)
+            ->whereNotIn('status', [AppointmentStatus::CANCELADA->value])
+            ->where('scheduled_at', '<', $end->format('Y-m-d H:i:s'))
+            ->whereRaw(
+                "scheduled_at + (duration_minutes * interval '1 minute') > ?",
+                [$start->format('Y-m-d H:i:s')],
+            );
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId->value);
+        }
+
+        return $query->exists();
     }
 }

@@ -11,6 +11,7 @@ final readonly class CreateAppointmentCommand
         public string $technicianId,
         public string $workStationId,
         public string $scheduledAt,
+        public int $durationMinutes,
         public ?string $notes = null,
     ) {}
 }

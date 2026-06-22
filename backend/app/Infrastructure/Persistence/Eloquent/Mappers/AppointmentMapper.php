@@ -22,6 +22,7 @@ final class AppointmentMapper
             new TechnicianId($model->technician_id),
             new WorkStationId($model->work_station_id),
             new \DateTimeImmutable($model->scheduled_at),
+            (int) $model->duration_minutes,
             AppointmentStatus::from($model->status),
             $model->notes,
         );
@@ -30,13 +31,14 @@ final class AppointmentMapper
     public static function toModel(Appointment $appointment): array
     {
         return [
-            'id'              => $appointment->id()->value,
-            'vehicle_id'      => $appointment->vehicleId()->value,
-            'technician_id'   => $appointment->technicianId()->value,
-            'work_station_id' => $appointment->workStationId()->value,
-            'scheduled_at'    => $appointment->scheduledAt()->format('Y-m-d H:i:s'),
-            'status'          => $appointment->status()->value,
-            'notes'           => $appointment->notes(),
+            'id'               => $appointment->id()->value,
+            'vehicle_id'       => $appointment->vehicleId()->value,
+            'technician_id'    => $appointment->technicianId()->value,
+            'work_station_id'  => $appointment->workStationId()->value,
+            'scheduled_at'     => $appointment->scheduledAt()->format('Y-m-d H:i:s'),
+            'duration_minutes' => $appointment->durationMinutes(),
+            'status'           => $appointment->status()->value,
+            'notes'            => $appointment->notes(),
         ];
     }
 }

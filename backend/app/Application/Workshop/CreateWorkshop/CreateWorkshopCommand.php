@@ -9,5 +9,6 @@ final readonly class CreateWorkshopCommand
     public function __construct(
         public string $name,
         public string $address,
+        public string $costCenter,
     ) {}
 }

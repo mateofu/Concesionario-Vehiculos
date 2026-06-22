@@ -10,6 +10,7 @@ use App\Domain\Technician\ValueObjects\TechnicianEmail;
 use App\Domain\Technician\ValueObjects\TechnicianId;
 use App\Domain\Technician\ValueObjects\TechnicianName;
 use App\Domain\Technician\ValueObjects\TechnicianPhone;
+use App\Domain\Technician\ValueObjects\TechnicianSpecialty;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -34,6 +35,7 @@ final class CreateTechnicianHandler
             new TechnicianName($command->name),
             $email,
             new TechnicianPhone($command->phone),
+            new TechnicianSpecialty($command->specialty),
         );
 
         $this->technicians->save($technician);

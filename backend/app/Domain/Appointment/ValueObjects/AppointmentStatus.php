@@ -6,19 +6,19 @@ namespace App\Domain\Appointment\ValueObjects;
 
 enum AppointmentStatus: string
 {
-    case PENDING     = 'pending';
-    case IN_PROGRESS = 'in_progress';
-    case COMPLETED   = 'completed';
-    case CANCELLED   = 'cancelled';
+    case PROGRAMADA  = 'programada';
+    case CONFIRMADA  = 'confirmada';
+    case ATENDIDA    = 'atendida';
+    case CANCELADA   = 'cancelada';
 
     /** @return AppointmentStatus[] */
     public function allowedTransitions(): array
     {
         return match($this) {
-            self::PENDING     => [self::IN_PROGRESS, self::CANCELLED],
-            self::IN_PROGRESS => [self::COMPLETED, self::CANCELLED],
-            self::COMPLETED   => [],
-            self::CANCELLED   => [],
+            self::PROGRAMADA => [self::CONFIRMADA, self::CANCELADA],
+            self::CONFIRMADA => [self::ATENDIDA, self::CANCELADA],
+            self::ATENDIDA   => [],
+            self::CANCELADA  => [],
         };
     }
 

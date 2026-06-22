@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Application\Workshop\CreateWorkshop;
 
 use App\Domain\Workshop\IWorkshopRepository;
+use App\Domain\Workshop\ValueObjects\CostCenter;
 use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Domain\Workshop\ValueObjects\WorkshopName;
 use App\Domain\Workshop\Workshop;
@@ -24,6 +25,7 @@ final class CreateWorkshopHandler
             $id,
             new WorkshopName($command->name),
             $command->address,
+            new CostCenter($command->costCenter),
         );
 
         $this->workshops->save($workshop);

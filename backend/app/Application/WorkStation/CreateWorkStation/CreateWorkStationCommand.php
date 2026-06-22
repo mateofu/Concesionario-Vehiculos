@@ -9,5 +9,7 @@ final readonly class CreateWorkStationCommand
     public function __construct(
         public string $locationId,
         public string $name,
+        public int $stationNumber,
+        public string $technicalArea,
     ) {}
 }
