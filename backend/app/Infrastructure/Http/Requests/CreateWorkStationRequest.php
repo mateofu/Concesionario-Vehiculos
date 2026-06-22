@@ -11,7 +11,7 @@ class CreateWorkStationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'location_id'    => ['required', 'uuid'],
+            'workshop_id'    => ['required', 'integer', 'exists:workshops,id'],
             'name'           => ['required', 'string', 'max:255'],
             'station_number' => ['required', 'integer', 'min:1'],
             'technical_area' => ['required', 'string', 'max:255'],

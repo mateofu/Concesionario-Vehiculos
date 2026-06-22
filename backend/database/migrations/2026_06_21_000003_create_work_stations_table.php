@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('work_stations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('location_id')->constrained('locations')->cascadeOnDelete();
+            $table->foreignId('workshop_id')->constrained('workshops')->cascadeOnDelete();
             $table->string('name');
             $table->timestamps();
         });

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 
-use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\Technician\ValueObjects\TechnicianId;
+use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Domain\WorkStation\IWorkStationRepository;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use App\Domain\WorkStation\WorkStation;
@@ -28,9 +28,9 @@ final class EloquentWorkStationRepository implements IWorkStationRepository
         return $model ? WorkStationMapper::toDomain($model) : null;
     }
 
-    public function findByLocation(LocationId $locationId): array
+    public function findByWorkshop(WorkshopId $workshopId): array
     {
-        return WorkStationModel::where('location_id', $locationId->value)
+        return WorkStationModel::where('workshop_id', $workshopId->value)
             ->get()
             ->map(fn ($m) => WorkStationMapper::toDomain($m))
             ->all();

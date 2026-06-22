@@ -24,7 +24,6 @@ class LocationController
     public function index(Request $request): JsonResponse
     {
         $result = $this->getLocations->handle(
-            workshopId: $request->query('workshop_id'),
             page: (int) $request->query('page', 1),
             perPage: (int) $request->query('per_page', 15),
         );
@@ -44,7 +43,6 @@ class LocationController
     {
         $id = $this->createLocation->handle(
             new CreateLocationCommand(
-                $request->validated('workshop_id'),
                 $request->validated('name'),
                 $request->validated('address'),
             ),

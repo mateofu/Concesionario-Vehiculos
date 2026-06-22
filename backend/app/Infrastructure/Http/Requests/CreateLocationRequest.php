@@ -11,9 +11,8 @@ class CreateLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workshop_id' => ['required', 'uuid'],
-            'name'        => ['required', 'string', 'max:255'],
-            'address'     => ['required', 'string', 'max:500'],
+            'name'    => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:500'],
         ];
     }
 }

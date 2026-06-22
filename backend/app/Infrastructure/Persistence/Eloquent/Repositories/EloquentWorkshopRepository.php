@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 
+use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\Workshop\IWorkshopRepository;
 use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Domain\Workshop\Workshop;
@@ -33,17 +34,37 @@ final class EloquentWorkshopRepository implements IWorkshopRepository
             ->all();
     }
 
-    public function findPaginated(int $page, int $perPage): array
+    public function findByLocation(LocationId $locationId): array
     {
-        return WorkshopModel::skip(($page - 1) * $perPage)
+        return WorkshopModel::where('location_id', $locationId->value)
+            ->get()
+            ->map(fn ($m) => WorkshopMapper::toDomain($m))
+            ->all();
+    }
+
+    public function findPaginated(int $page, int $perPage, ?LocationId $locationId = null): array
+    {
+        $query = WorkshopModel::query();
+
+        if ($locationId !== null) {
+            $query->where('location_id', $locationId->value);
+        }
+
+        return $query->skip(($page - 1) * $perPage)
             ->take($perPage)
             ->get()
             ->map(fn ($m) => WorkshopMapper::toDomain($m))
             ->all();
     }
 
-    public function countAll(): int
+    public function countAll(?LocationId $locationId = null): int
     {
-        return WorkshopModel::count();
+        $query = WorkshopModel::query();
+
+        if ($locationId !== null) {
+            $query->where('location_id', $locationId->value);
+        }
+
+        return $query->count();
     }
 }

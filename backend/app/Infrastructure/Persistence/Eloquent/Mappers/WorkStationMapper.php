@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Eloquent\Mappers;
 
-use App\Domain\Location\ValueObjects\LocationId;
+use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Domain\WorkStation\ValueObjects\TechnicalArea;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use App\Domain\WorkStation\ValueObjects\WorkStationName;
@@ -18,7 +18,7 @@ final class WorkStationMapper
         return WorkStation::create(
             new WorkStationId((int) $model->id),
             new WorkStationName($model->name),
-            new LocationId((int) $model->location_id),
+            new WorkshopId((int) $model->workshop_id),
             (int) $model->station_number,
             new TechnicalArea($model->technical_area),
         );
@@ -27,7 +27,7 @@ final class WorkStationMapper
     public static function toModel(WorkStation $workStation): array
     {
         return [
-            'location_id'    => $workStation->locationId()->value,
+            'workshop_id'    => $workStation->workshopId()->value,
             'name'           => $workStation->name()->value,
             'station_number' => $workStation->stationNumber(),
             'technical_area' => $workStation->technicalArea()->value,

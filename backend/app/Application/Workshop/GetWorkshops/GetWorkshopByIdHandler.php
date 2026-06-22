@@ -24,6 +24,7 @@ final class GetWorkshopByIdHandler
 
         return new WorkshopDTO(
             id: $workshop->id()->value,
+            location_id: $workshop->locationId()->value,
             name: $workshop->name()->value,
             address: $workshop->address(),
             cost_center: $workshop->costCenter()->value,

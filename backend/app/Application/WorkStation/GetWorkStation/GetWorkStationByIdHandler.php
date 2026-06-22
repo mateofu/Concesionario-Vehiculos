@@ -24,7 +24,7 @@ final class GetWorkStationByIdHandler
 
         return new WorkStationDTO(
             id: $workStation->id()->value,
-            location_id: $workStation->locationId()->value,
+            workshop_id: $workStation->workshopId()->value,
             name: $workStation->name()->value,
             station_number: $workStation->stationNumber(),
             technical_area: $workStation->technicalArea()->value,

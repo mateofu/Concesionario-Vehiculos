@@ -12,10 +12,9 @@ class LocationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this['id'],
-            'workshop_id' => $this['workshop_id'],
-            'name'        => $this['name'],
-            'address'     => $this['address'],
+            'id'      => $this['id'],
+            'name'    => $this['name'],
+            'address' => $this['address'],
         ];
     }
 }

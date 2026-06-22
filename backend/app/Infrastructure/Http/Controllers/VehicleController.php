@@ -37,7 +37,7 @@ class VehicleController
     public function store(CreateVehicleRequest $request, CreateVehicleHandler $handler): JsonResponse
     {
         $id = $handler->handle(new CreateVehicleCommand(
-            ownerId:      $request->validated('owner_id'),
+            ownerId:      (string) $request->validated('owner_id'),
             licensePlate: $request->validated('license_plate'),
             brand:        $request->validated('brand'),
             model:        $request->validated('model'),

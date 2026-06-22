@@ -21,7 +21,7 @@ class WorkStationController
     public function index(Request $request, GetWorkStationsHandler $handler): JsonResponse
     {
         $result = $handler->handle(
-            locationId: $request->query('location_id'),
+            workshopId: $request->query('workshop_id'),
             page: (int) $request->query('page', 1),
             perPage: (int) $request->query('per_page', 15),
         );
@@ -40,7 +40,7 @@ class WorkStationController
     public function store(CreateWorkStationRequest $request, CreateWorkStationHandler $handler): JsonResponse
     {
         $id = $handler->handle(new CreateWorkStationCommand(
-            locationId:    $request->validated('location_id'),
+            workshopId:    (string) $request->validated('workshop_id'),
             name:          $request->validated('name'),
             stationNumber: $request->validated('station_number'),
             technicalArea: $request->validated('technical_area'),
@@ -56,7 +56,7 @@ class WorkStationController
     ): JsonResponse {
         $handler->handle(new AssignTechnicianCommand(
             workStationId: $id,
-            technicianId:  $request->validated('technician_id'),
+            technicianId:  (string) $request->validated('technician_id'),
         ));
 
         return new JsonResponse(['message' => 'Técnico asignado exitosamente.'], 200);

@@ -11,7 +11,7 @@ class AssignTechnicianRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'technician_id' => ['required', 'uuid'],
+            'technician_id' => ['required', 'integer', 'exists:technicians,id'],
         ];
     }
 }

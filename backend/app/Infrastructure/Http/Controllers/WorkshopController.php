@@ -18,6 +18,7 @@ class WorkshopController
     public function index(Request $request, GetWorkshopsHandler $handler): JsonResponse
     {
         $result = $handler->handle(
+            locationId: $request->query('location_id'),
             page: (int) $request->query('page', 1),
             perPage: (int) $request->query('per_page', 15),
         );
@@ -36,6 +37,7 @@ class WorkshopController
     public function store(CreateWorkshopRequest $request, CreateWorkshopHandler $handler): JsonResponse
     {
         $id = $handler->handle(new CreateWorkshopCommand(
+            locationId: (string) $request->validated('location_id'),
             name: $request->validated('name'),
             address: $request->validated('address'),
             costCenter: $request->validated('cost_center'),
