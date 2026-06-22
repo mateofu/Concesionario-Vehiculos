@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Eloquent\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class WorkStationModel extends Model
+{
+    use HasUuids;
+
+    protected $table = 'work_stations';
+
+    protected $fillable = [
+        'id',
+        'location_id',
+        'name',
+    ];
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(LocationModel::class, 'location_id');
+    }
+
+    public function technicians(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            TechnicianModel::class,
+            'work_station_technician',
+            'work_station_id',
+            'technician_id',
+        )->withTimestamps();
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(AppointmentModel::class, 'work_station_id');
+    }
+}

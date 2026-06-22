@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Persistence\Eloquent\Models;
+
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class TechnicianModel extends Model
+{
+    use HasUuids;
+
+    protected $table = 'technicians';
+
+    protected $fillable = [
+        'id',
+        'name',
+        'email',
+        'phone',
+    ];
+
+    public function workStations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            WorkStationModel::class,
+            'work_station_technician',
+            'technician_id',
+            'work_station_id',
+        )->withTimestamps();
+    }
+}
