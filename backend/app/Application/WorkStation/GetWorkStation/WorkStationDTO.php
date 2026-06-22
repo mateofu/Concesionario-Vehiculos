@@ -8,7 +8,7 @@ final readonly class WorkStationDTO
 {
     public function __construct(
         public int $id,
-        public int $location_id,
+        public int $workshop_id,
         public string $name,
         public int $station_number,
         public string $technical_area,

@@ -7,7 +7,6 @@ namespace App\Infrastructure\Persistence\Eloquent\Mappers;
 use App\Domain\Location\Location;
 use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\Location\ValueObjects\LocationName;
-use App\Domain\Workshop\ValueObjects\WorkshopId;
 use App\Infrastructure\Persistence\Eloquent\Models\LocationModel;
 
 final class LocationMapper
@@ -18,16 +17,14 @@ final class LocationMapper
             new LocationId((int) $model->id),
             new LocationName($model->name),
             $model->address,
-            new WorkshopId((int) $model->workshop_id),
         );
     }
 
     public static function toModel(Location $location): array
     {
         return [
-            'workshop_id' => $location->workshopId()->value,
-            'name'        => $location->name()->value,
-            'address'     => $location->address(),
+            'name'    => $location->name()->value,
+            'address' => $location->address(),
         ];
     }
 }

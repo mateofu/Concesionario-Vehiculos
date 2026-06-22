@@ -13,13 +13,13 @@ class WorkStationModel extends Model
 {
     protected $table = 'work_stations';
 
-    protected $fillable = ['location_id', 'name', 'station_number', 'technical_area'];
+    protected $fillable = ['workshop_id', 'name', 'station_number', 'technical_area'];
 
     protected $casts = ['station_number' => 'integer'];
 
-    public function location(): BelongsTo
+    public function workshop(): BelongsTo
     {
-        return $this->belongsTo(LocationModel::class, 'location_id');
+        return $this->belongsTo(WorkshopModel::class, 'workshop_id');
     }
 
     public function technicians(): BelongsToMany

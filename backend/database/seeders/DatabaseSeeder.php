@@ -18,39 +18,39 @@ class DatabaseSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        DB::table('workshops')->insert([
-            ['name' => 'Taller Norte', 'address' => 'Calle 100 #15-20',  'cost_center' => '001', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Taller Sur',   'address' => 'Carrera 30 #45-10', 'cost_center' => '002', 'created_at' => now(), 'updated_at' => now()],
-        ]);
-
-        $workshopId1 = DB::table('workshops')->where('name', 'Taller Norte')->value('id');
-        $workshopId2 = DB::table('workshops')->where('name', 'Taller Sur')->value('id');
-
         DB::table('locations')->insert([
-            ['workshop_id' => $workshopId1, 'name' => 'Sede Principal',  'address' => 'Calle 100 #15-20',  'created_at' => now(), 'updated_at' => now()],
-            ['workshop_id' => $workshopId1, 'name' => 'Sede Secundaria', 'address' => 'Calle 110 #20-30',  'created_at' => now(), 'updated_at' => now()],
-            ['workshop_id' => $workshopId2, 'name' => 'Sede Única',      'address' => 'Carrera 30 #45-10', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Sede Principal', 'address' => 'Calle 100 #15-20',  'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Sede Norte',     'address' => 'Carrera 30 #45-10', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        $locationId1 = DB::table('locations')->where('name', 'Sede Principal')->value('id');
-        $locationId2 = DB::table('locations')->where('name', 'Sede Secundaria')->value('id');
-        $locationId3 = DB::table('locations')->where('name', 'Sede Única')->value('id');
+        $sedePrincipal = DB::table('locations')->where('name', 'Sede Principal')->value('id');
+        $sedeNorte     = DB::table('locations')->where('name', 'Sede Norte')->value('id');
+
+        DB::table('workshops')->insert([
+            ['location_id' => $sedePrincipal, 'name' => 'Taller Mecánica',  'address' => 'Calle 100 #15-20',  'cost_center' => '001', 'created_at' => now(), 'updated_at' => now()],
+            ['location_id' => $sedePrincipal, 'name' => 'Taller Latonería', 'address' => 'Calle 100 #15-25',  'cost_center' => '002', 'created_at' => now(), 'updated_at' => now()],
+            ['location_id' => $sedeNorte,     'name' => 'Taller Norte',     'address' => 'Carrera 30 #45-10', 'cost_center' => '003', 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        $tallerMecanica  = DB::table('workshops')->where('name', 'Taller Mecánica')->value('id');
+        $tallerLatoneria = DB::table('workshops')->where('name', 'Taller Latonería')->value('id');
+        $tallerNorte     = DB::table('workshops')->where('name', 'Taller Norte')->value('id');
 
         DB::table('work_stations')->insert([
-            ['location_id' => $locationId1, 'name' => 'Puesto Motor 1',     'station_number' => 1, 'technical_area' => 'Motor',     'created_at' => now(), 'updated_at' => now()],
-            ['location_id' => $locationId1, 'name' => 'Puesto Eléctrico 1', 'station_number' => 2, 'technical_area' => 'Eléctrico', 'created_at' => now(), 'updated_at' => now()],
-            ['location_id' => $locationId2, 'name' => 'Puesto Frenos 1',    'station_number' => 1, 'technical_area' => 'Frenos',    'created_at' => now(), 'updated_at' => now()],
-            ['location_id' => $locationId3, 'name' => 'Puesto General 1',   'station_number' => 1, 'technical_area' => 'General',   'created_at' => now(), 'updated_at' => now()],
+            ['workshop_id' => $tallerMecanica,  'name' => 'Puesto Motor 1',     'station_number' => 1, 'technical_area' => 'Motor',     'created_at' => now(), 'updated_at' => now()],
+            ['workshop_id' => $tallerMecanica,  'name' => 'Puesto Eléctrico 1', 'station_number' => 2, 'technical_area' => 'Eléctrico', 'created_at' => now(), 'updated_at' => now()],
+            ['workshop_id' => $tallerLatoneria, 'name' => 'Puesto Pintura 1',   'station_number' => 1, 'technical_area' => 'Pintura',   'created_at' => now(), 'updated_at' => now()],
+            ['workshop_id' => $tallerNorte,     'name' => 'Puesto General 1',   'station_number' => 1, 'technical_area' => 'General',   'created_at' => now(), 'updated_at' => now()],
         ]);
 
         $wsId1 = DB::table('work_stations')->where('name', 'Puesto Motor 1')->value('id');
         $wsId2 = DB::table('work_stations')->where('name', 'Puesto Eléctrico 1')->value('id');
-        $wsId3 = DB::table('work_stations')->where('name', 'Puesto Frenos 1')->value('id');
+        $wsId3 = DB::table('work_stations')->where('name', 'Puesto Pintura 1')->value('id');
 
         DB::table('technicians')->insert([
             ['name' => 'Carlos Pérez',  'email' => 'carlos@taller.co', 'phone' => '3001234567', 'specialty' => 'Motor',     'is_available' => true,  'created_at' => now(), 'updated_at' => now()],
             ['name' => 'Ana Gómez',     'email' => 'ana@taller.co',    'phone' => '3109876543', 'specialty' => 'Eléctrico', 'is_available' => true,  'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'Luis Martínez', 'email' => 'luis@taller.co',   'phone' => '3205551234', 'specialty' => 'Frenos',    'is_available' => false, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Luis Martínez', 'email' => 'luis@taller.co',   'phone' => '3205551234', 'specialty' => 'Pintura',   'is_available' => false, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         $techId1 = DB::table('technicians')->where('email', 'carlos@taller.co')->value('id');
@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
         $vehicleId1 = DB::table('vehicles')->where('license_plate', 'ABC123')->value('id');
         $vehicleId2 = DB::table('vehicles')->where('license_plate', 'XYZ789')->value('id');
 
-        foreach ([$locationId1, $locationId2, $locationId3] as $locId) {
+        foreach ([$sedePrincipal, $sedeNorte] as $locId) {
             foreach (range(1, 7) as $day) {
                 DB::table('operating_schedules')->insert([
                     'location_id' => $locId,
@@ -94,7 +94,7 @@ class DatabaseSeeder extends Seeder
         }
 
         DB::table('blocked_periods')->insert([
-            'location_id' => $locationId1,
+            'location_id' => $sedePrincipal,
             'starts_at'   => now()->addMonth()->startOfDay(),
             'ends_at'     => now()->addMonth()->startOfDay()->addDay(),
             'reason'      => 'Día festivo nacional',

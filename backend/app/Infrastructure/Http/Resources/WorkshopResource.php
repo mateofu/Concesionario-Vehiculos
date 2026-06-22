@@ -13,6 +13,7 @@ class WorkshopResource extends JsonResource
     {
         return [
             'id'          => $this['id'],
+            'location_id' => $this['location_id'],
             'name'        => $this['name'],
             'address'     => $this['address'],
             'cost_center' => $this['cost_center'],

@@ -7,6 +7,7 @@ namespace App\Application\Workshop\CreateWorkshop;
 final readonly class CreateWorkshopCommand
 {
     public function __construct(
+        public string $locationId,
         public string $name,
         public string $address,
         public string $costCenter,

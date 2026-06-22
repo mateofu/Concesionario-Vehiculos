@@ -44,9 +44,9 @@ class AppointmentController
     public function store(CreateAppointmentRequest $request, CreateAppointmentHandler $handler): JsonResponse
     {
         $id = $handler->handle(new CreateAppointmentCommand(
-            vehicleId:       $request->validated('vehicle_id'),
-            technicianId:    $request->validated('technician_id'),
-            workStationId:   $request->validated('work_station_id'),
+            vehicleId:       (string) $request->validated('vehicle_id'),
+            technicianId:    (string) $request->validated('technician_id'),
+            workStationId:   (string) $request->validated('work_station_id'),
             scheduledAt:     $request->validated('scheduled_at'),
             durationMinutes: $request->validated('duration_minutes'),
             notes:           $request->validated('notes'),

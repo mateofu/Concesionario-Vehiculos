@@ -172,21 +172,23 @@ Base URL: `http://localhost:8000/api/v1`
 
 Todos los endpoints excepto `/auth/login` requieren el header `Authorization: Bearer {token}`.
 
-### Talleres
-
-| Método | Ruta | Descripción |
-|---|---|---|
-| GET | `/workshops` | Listar talleres (paginado) |
-| POST | `/workshops` | Crear taller |
-| GET | `/workshops/{id}` | Ver taller por ID |
+> **Jerarquía:** Sede → Taller → Puesto de trabajo. Una sede tiene varios talleres, y cada taller tiene varios puestos.
 
 ### Sedes
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/locations` | Listar sedes (paginado, filtro: `?workshop_id=1`) |
+| GET | `/locations` | Listar sedes (paginado) |
 | POST | `/locations` | Crear sede |
 | GET | `/locations/{id}` | Ver sede por ID |
+
+### Talleres
+
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/workshops` | Listar talleres (paginado, filtro: `?location_id=1`) |
+| POST | `/workshops` | Crear taller (requiere `location_id` de la sede) |
+| GET | `/workshops/{id}` | Ver taller por ID |
 
 ### Horarios operativos
 
@@ -206,8 +208,8 @@ Todos los endpoints excepto `/auth/login` requieren el header `Authorization: Be
 
 | Método | Ruta | Descripción |
 |---|---|---|
-| GET | `/work-stations` | Listar puestos (paginado, filtro: `?location_id=1`) |
-| POST | `/work-stations` | Crear puesto |
+| GET | `/work-stations` | Listar puestos (paginado, filtro: `?workshop_id=1`) |
+| POST | `/work-stations` | Crear puesto (requiere `workshop_id` del taller) |
 | GET | `/work-stations/{id}` | Ver puesto por ID |
 | POST | `/work-stations/{id}/technicians` | Asignar técnico a puesto |
 

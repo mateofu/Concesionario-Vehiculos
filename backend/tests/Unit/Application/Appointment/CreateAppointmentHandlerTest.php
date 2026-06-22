@@ -26,6 +26,11 @@ use App\Domain\Vehicle\ValueObjects\LicensePlate;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
 use App\Domain\Vehicle\ValueObjects\VehicleStyle;
 use App\Domain\Vehicle\ValueObjects\VehicleYear;
+use App\Domain\Workshop\IWorkshopRepository;
+use App\Domain\Workshop\ValueObjects\CostCenter;
+use App\Domain\Workshop\ValueObjects\WorkshopId;
+use App\Domain\Workshop\ValueObjects\WorkshopName;
+use App\Domain\Workshop\Workshop;
 use App\Domain\WorkStation\IWorkStationRepository;
 use App\Domain\WorkStation\ValueObjects\TechnicalArea;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
@@ -40,6 +45,7 @@ class CreateAppointmentHandlerTest extends TestCase
     private IVehicleRepository $vehicles;
     private ITechnicianRepository $technicians;
     private IWorkStationRepository $workStations;
+    private IWorkshopRepository $workshops;
     private IOperatingScheduleRepository $operatingSchedules;
     private IBlockedPeriodRepository $blockedPeriods;
 
@@ -49,6 +55,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles           = $this->createMock(IVehicleRepository::class);
         $this->technicians        = $this->createMock(ITechnicianRepository::class);
         $this->workStations       = $this->createMock(IWorkStationRepository::class);
+        $this->workshops          = $this->createMock(IWorkshopRepository::class);
         $this->operatingSchedules = $this->createMock(IOperatingScheduleRepository::class);
         $this->blockedPeriods     = $this->createMock(IBlockedPeriodRepository::class);
     }
@@ -60,6 +67,7 @@ class CreateAppointmentHandlerTest extends TestCase
             $this->vehicles,
             $this->technicians,
             $this->workStations,
+            $this->workshops,
             $this->operatingSchedules,
             $this->blockedPeriods,
         );
@@ -94,9 +102,20 @@ class CreateAppointmentHandlerTest extends TestCase
         return WorkStation::create(
             new WorkStationId(1),
             new WorkStationName('Puesto 1'),
-            new LocationId(1),
+            new WorkshopId(1),
             1,
             new TechnicalArea('Motor'),
+        );
+    }
+
+    private function makeWorkshop(): Workshop
+    {
+        return Workshop::create(
+            new WorkshopId(1),
+            new LocationId(1),
+            new WorkshopName('Taller Mecánica'),
+            'Calle 100 #15-20',
+            new CostCenter('001'),
         );
     }
 
@@ -116,6 +135,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles->method('findById')->willReturn($this->makeVehicle());
         $this->technicians->method('findById')->willReturn($this->makeTechnician());
         $this->workStations->method('findById')->willReturn($this->makeWorkStation());
+        $this->workshops->method('findById')->willReturn($this->makeWorkshop());
         $this->operatingSchedules->method('findByLocationAndDay')->willReturn($this->makeSchedule());
         $this->blockedPeriods->method('hasOverlap')->willReturn(false);
         $this->appointments->method('hasOverlap')->willReturn(false);
@@ -176,6 +196,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles->method('findById')->willReturn($this->makeVehicle());
         $this->technicians->method('findById')->willReturn($this->makeTechnician());
         $this->workStations->method('findById')->willReturn($this->makeWorkStation());
+        $this->workshops->method('findById')->willReturn($this->makeWorkshop());
         $this->operatingSchedules->method('findByLocationAndDay')->willReturn(null);
 
         $this->makeHandler()->handle(
@@ -191,6 +212,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles->method('findById')->willReturn($this->makeVehicle());
         $this->technicians->method('findById')->willReturn($this->makeTechnician());
         $this->workStations->method('findById')->willReturn($this->makeWorkStation());
+        $this->workshops->method('findById')->willReturn($this->makeWorkshop());
         $this->operatingSchedules->method('findByLocationAndDay')->willReturn($this->makeSchedule('08:00', '18:00'));
 
         $this->makeHandler()->handle(
@@ -206,6 +228,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles->method('findById')->willReturn($this->makeVehicle());
         $this->technicians->method('findById')->willReturn($this->makeTechnician());
         $this->workStations->method('findById')->willReturn($this->makeWorkStation());
+        $this->workshops->method('findById')->willReturn($this->makeWorkshop());
         $this->operatingSchedules->method('findByLocationAndDay')->willReturn($this->makeSchedule());
         $this->blockedPeriods->method('hasOverlap')->willReturn(true);
 
@@ -222,6 +245,7 @@ class CreateAppointmentHandlerTest extends TestCase
         $this->vehicles->method('findById')->willReturn($this->makeVehicle());
         $this->technicians->method('findById')->willReturn($this->makeTechnician());
         $this->workStations->method('findById')->willReturn($this->makeWorkStation());
+        $this->workshops->method('findById')->willReturn($this->makeWorkshop());
         $this->operatingSchedules->method('findByLocationAndDay')->willReturn($this->makeSchedule());
         $this->blockedPeriods->method('hasOverlap')->willReturn(false);
         $this->appointments->method('hasOverlap')->willReturn(true);

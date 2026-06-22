@@ -6,7 +6,6 @@ namespace App\Domain\Location;
 
 use App\Domain\Location\ValueObjects\LocationId;
 use App\Domain\Location\ValueObjects\LocationName;
-use App\Domain\Workshop\ValueObjects\WorkshopId;
 
 final class Location
 {
@@ -14,16 +13,14 @@ final class Location
         private readonly LocationId $id,
         private LocationName $name,
         private string $address,
-        private readonly WorkshopId $workshopId,
     ) {}
 
     public static function create(
         LocationId $id,
         LocationName $name,
         string $address,
-        WorkshopId $workshopId,
     ): self {
-        return new self($id, $name, $address, $workshopId);
+        return new self($id, $name, $address);
     }
 
     public function id(): LocationId
@@ -39,10 +36,5 @@ final class Location
     public function address(): string
     {
         return $this->address;
-    }
-
-    public function workshopId(): WorkshopId
-    {
-        return $this->workshopId;
     }
 }

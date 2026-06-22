@@ -7,7 +7,6 @@ namespace App\Application\Location\CreateLocation;
 final readonly class CreateLocationCommand
 {
     public function __construct(
-        public string $workshopId,
         public string $name,
         public string $address,
     ) {}

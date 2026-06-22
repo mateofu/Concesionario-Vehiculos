@@ -13,6 +13,7 @@ use App\Domain\Technician\ITechnicianRepository;
 use App\Domain\Technician\ValueObjects\TechnicianId;
 use App\Domain\Vehicle\IVehicleRepository;
 use App\Domain\Vehicle\ValueObjects\VehicleId;
+use App\Domain\Workshop\IWorkshopRepository;
 use App\Domain\WorkStation\IWorkStationRepository;
 use App\Domain\WorkStation\ValueObjects\WorkStationId;
 use RuntimeException;
@@ -24,6 +25,7 @@ final class CreateAppointmentHandler
         private readonly IVehicleRepository $vehicles,
         private readonly ITechnicianRepository $technicians,
         private readonly IWorkStationRepository $workStations,
+        private readonly IWorkshopRepository $workshops,
         private readonly IOperatingScheduleRepository $operatingSchedules,
         private readonly IBlockedPeriodRepository $blockedPeriods,
     ) {}
@@ -48,7 +50,12 @@ final class CreateAppointmentHandler
             throw new RuntimeException("WorkStation [{$command->workStationId}] not found.");
         }
 
-        $locationId = $workStation->locationId();
+        $workshop = $this->workshops->findById($workStation->workshopId());
+        if ($workshop === null) {
+            throw new RuntimeException("Workshop for WorkStation [{$command->workStationId}] not found.");
+        }
+
+        $locationId = $workshop->locationId();
         $dayOfWeek  = (int) $scheduledAt->format('N');
 
         $schedule = $this->operatingSchedules->findByLocationAndDay($locationId, $dayOfWeek);

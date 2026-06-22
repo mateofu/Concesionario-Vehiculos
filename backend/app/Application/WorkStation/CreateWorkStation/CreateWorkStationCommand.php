@@ -7,7 +7,7 @@ namespace App\Application\WorkStation\CreateWorkStation;
 final readonly class CreateWorkStationCommand
 {
     public function __construct(
-        public string $locationId,
+        public string $workshopId,
         public string $name,
         public int $stationNumber,
         public string $technicalArea,

@@ -13,7 +13,7 @@ class WorkStationResource extends JsonResource
     {
         return [
             'id'             => $this['id'],
-            'location_id'    => $this['location_id'],
+            'workshop_id'    => $this['workshop_id'],
             'name'           => $this['name'],
             'station_number' => $this['station_number'],
             'technical_area' => $this['technical_area'],

@@ -11,7 +11,7 @@ class CreateVehicleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'owner_id'      => ['required', 'uuid'],
+            'owner_id'      => ['required', 'integer', 'exists:owners,id'],
             'license_plate' => ['required', 'string', 'max:20'],
             'brand'         => ['required', 'string', 'max:100'],
             'model'         => ['required', 'string', 'max:100'],

@@ -24,7 +24,6 @@ final class GetLocationByIdHandler
 
         return new LocationDTO(
             id: $location->id()->value,
-            workshop_id: $location->workshopId()->value,
             name: $location->name()->value,
             address: $location->address(),
         );
